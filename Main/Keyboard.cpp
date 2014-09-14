@@ -1,5 +1,5 @@
-#include <GL\SDL.h>
-#include "Keyboard.h"
+#include <GL/SDL.h>
+#include "Main/Keyboard.h"
 
 Keyboard::Keyboard() {
 	keys = SDL_GetKeyboardState(NULL);

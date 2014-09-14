@@ -1,8 +1,8 @@
-#include <GL\glew.h>
-#include "math.h"
+#include <GL/glew.h>
 #include <iostream>
 #include <vector>
-#include "ModelData.h"
+#include "Util/GLMath.h"
+#include "Models/ModelData.h"
 
 namespace ShaderUtil {
 	GLint loadShader(GLenum type, std::string shaderCode);

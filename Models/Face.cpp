@@ -1,4 +1,4 @@
-#include "Face.h"
+#include "Models/Face.h"
 
 Face::Face(int vertexIndices[3]) {
 	this->vertexIndices[0] = vertexIndices[0];

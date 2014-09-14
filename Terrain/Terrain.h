@@ -1,14 +1,14 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <future>
 #include <mutex>
 #include <vector>
-#include "GLMath.h"
-#include "TerrainSquare.h"
-#include "BoxCoord.h"
-#include "Settings.h"
+#include "Util/GLMath.h"
+#include "Terrain/TerrainSquare.h"
+#include "Terrain/BoxCoord.h"
+#include "Main/Settings.h"
 
 class Terrain {
 	const int SIZE_OF_FLOAT = sizeof(GLfloat);

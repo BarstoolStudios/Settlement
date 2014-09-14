@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include <GL\SDL.h>
+#include <GL/SDL.h>
 
 class Keyboard {
 	const Uint8* keys;

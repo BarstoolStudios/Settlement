@@ -1,4 +1,4 @@
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 Matrix2f::Matrix2f() {
 	m00 = 0; m10 = 0;

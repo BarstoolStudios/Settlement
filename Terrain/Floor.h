@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 class Floor {
 	static std::string vertexShaderCode;

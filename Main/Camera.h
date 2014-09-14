@@ -1,12 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "GLMath.h"
-#include "MoveType.h"
-#include "GameTimer.h"
-#include "Terrain.h"
-#include "Mouse.h"
-#include "Keyboard.h"
+#include "Util/GLMath.h"
+#include "Types/MoveType.h"
+#include "Util/GameTimer.h"
+#include "Terrain/Terrain.h"
+#include "Main/Mouse.h"
+#include "Main/Keyboard.h"
 
 class Camera {
 	float speed;

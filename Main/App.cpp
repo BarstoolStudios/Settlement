@@ -1,10 +1,10 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <list>
-#include "App.h"
-#include "Settings.h"
-#include "ShaderUtil.h"
-#include "Tree.h"
+#include "Main/App.h"
+#include "Main/Settings.h"
+#include "Util/ShaderUtil.h"
+#include "Models/Tree.h"
 
 App::App() {
 

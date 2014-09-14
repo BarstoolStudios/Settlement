@@ -1,4 +1,4 @@
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 Vector4f::Vector4f() {
 	x = 0;

@@ -1,7 +1,7 @@
 #ifndef GLMATH_H
 #define GLMATH_H
 
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <ostream>
 #include <vector>
 

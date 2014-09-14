@@ -4,9 +4,9 @@
 #include <vector>
 #include <future>
 #include <mutex>
-#include "GLMath.h"
-#include "TerrainSquare.h"
-#include "BoxCoord.h"
+#include "Util/GLMath.h"
+#include "Terrain/TerrainSquare.h"
+#include "Terrain/BoxCoord.h"
 
 class TerrainGenerator {
 	static Vector2f fountainLocation;

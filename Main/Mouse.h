@@ -1,7 +1,8 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 	
-#include "GLMath.h"
+#include "Util/GLMath.h"
+
 class Mouse {
 	int dx, dy;
 

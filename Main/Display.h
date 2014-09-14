@@ -1,8 +1,8 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include <GL\glew.h>
-#include <GL\SDL.h>
+#include <GL/glew.h>
+#include <GL/SDL.h>
 
 class Display {
 	SDL_Window* window;

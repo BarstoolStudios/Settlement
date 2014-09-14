@@ -1,8 +1,8 @@
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <vector>
 #include <climits>
 #include <string>
-#include "TerrainSquare.h"
+#include "Terrain/TerrainSquare.h"
 
 TerrainSquare::TerrainSquare() {
 	x = INT_MAX;

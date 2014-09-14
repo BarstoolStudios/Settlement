@@ -1,4 +1,4 @@
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 Matrix4f::Matrix4f() {
 	m00 = 1; m10 = 0; m20 = 0; m30 = 0;

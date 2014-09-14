@@ -1,6 +1,6 @@
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <cmath>
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 Vector3f::Vector3f() {
 	x = 0;

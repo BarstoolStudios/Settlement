@@ -1,9 +1,9 @@
 #include "GL/glew.h"
 #include <vector>
 #include <iostream>
-#include "Floor.h"
-#include "GLMath.h"
-#include "ShaderUtil.h"
+#include "Terrain/Floor.h"
+#include "Util/GLMath.h"
+#include "Util/ShaderUtil.h"
 
 std::string Floor::vertexShaderCode =
 	"uniform mat4 uMVP;\n"

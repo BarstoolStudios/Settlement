@@ -1,11 +1,11 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
-#include "Camera.h"
-#include "GLMath.h"
-#include "Settings.h"
-#include "Mouse.h"
-#include "Keyboard.h"
+#include "Main/Camera.h"
+#include "Util/GLMath.h"
+#include "Main/Settings.h"
+#include "Main/Mouse.h"
+#include "Main/Keyboard.h"
 
 Camera::Camera() : Camera(Vector2f(0,0)) {}
 

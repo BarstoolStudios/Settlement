@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cmath>
-#include "TerrainUtil.h"
-#include "GLMath.h"
+#include "Util/TerrainUtil.h"
+#include "Util/GLMath.h"
 
 const Vector2f TerrainUtil::gradientSet[] = { Vector2f(0, 1), Vector2f(1, 1), Vector2f(1, 0), Vector2f(1, -1), 
 Vector2f(0, -1), Vector2f(-1, -1), Vector2f(-1, 0), Vector2f(-1, 1)};

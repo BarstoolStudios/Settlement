@@ -1,7 +1,7 @@
 #ifndef TERRAINUTIL_H
 #define TERRAINUTIL_H
 
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 
 class TerrainUtil {

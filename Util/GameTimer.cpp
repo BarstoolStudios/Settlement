@@ -1,6 +1,6 @@
 #include <ctime>
 #include <cmath>
-#include "GameTimer.h"
+#include "Util/GameTimer.h"
 
 GameTimer::GameTimer() {
 	lastFrame = getTime();

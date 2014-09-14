@@ -1,4 +1,4 @@
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 Matrix3f::Matrix3f() {
 	m00 = 1; m10 = 0; m20 = 0;

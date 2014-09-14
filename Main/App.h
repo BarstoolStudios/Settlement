@@ -2,13 +2,13 @@
 #define APP_H
 
 #include <list>
-#include "Display.h"
-#include "Keyboard.h"
-#include "Mouse.h"
-#include "Camera.h"
-#include "GameTimer.h"
-#include "Terrain.h"
-#include "Tree.h"
+#include "Main/Display.h"
+#include "Main/Keyboard.h"
+#include "Main/Mouse.h"
+#include "Main/Camera.h"
+#include "Util/GameTimer.h"
+#include "Terrain/Terrain.h"
+#include "Models/Tree.h"
 
 class App {
 	Display* display;

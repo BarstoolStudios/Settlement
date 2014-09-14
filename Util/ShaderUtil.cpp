@@ -1,14 +1,13 @@
-#include <GL\glew.h>
-#include "ShaderUtil.h"
+#include <GL/glew.h>
+#include "Util/ShaderUtil.h"
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <windows.h>
-#include <SOIL.h>
-#include "GLMath.h"
-#include "Face.h"
-#include "Utility.h"
+#include "Util/GLMath.h"
+#include "Models/Face.h"
+#include "Util/Utility.h"
 
 GLint ShaderUtil::loadShader(GLenum type, std::string shaderCode) {
 	GLint shader = glCreateShader(type);
@@ -26,7 +25,7 @@ std::string ShaderUtil::readShaderFromFile(std::string shaderName) {
 	std::string text = "";
 	std::string line = "";
 
-	std::ifstream shaderFile(shaderName);
+	std::ifstream shaderFile(std::string("Resources/Shaders/") + shaderName);
 
 	if (shaderFile.is_open()) {
 		while (std::getline(shaderFile, line)) {
@@ -107,7 +106,7 @@ GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shade
 }
 
 GLint ShaderUtil::loadPNG(std::string pngName) {
-	
+	return -1;
 }
 
 ModelData ShaderUtil::loadModel(std::string modelName) {
@@ -120,7 +119,7 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 	std::vector<Vector3f> weightIndices;
 	std::vector<Face> faces;
 
-	std::ifstream modelFile(modelName + ".bar");
+	std::ifstream modelFile(std::string("Resources/Models/") + modelName + ".bar");
 
 	if(modelFile.is_open()) {
 

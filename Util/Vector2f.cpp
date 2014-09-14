@@ -1,4 +1,5 @@
-#include "GLMath.h"
+#include <GL/glew.h>
+#include "Util/GLMath.h"
 
 Vector2f::Vector2f() {
 	x = 0;

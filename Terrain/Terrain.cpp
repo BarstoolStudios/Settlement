@@ -1,4 +1,4 @@
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <vector>
 #include <mutex>
 #include <cmath>
@@ -6,14 +6,15 @@
 #include <string>
 #include <iostream>
 #include <future>
-#include "Terrain.h"
-#include "TerrainSquare.h"
-#include "TerrainGenerator.h"
-#include "TerrainUtil.h"
-#include "GLMath.h"
-#include "BoxCoord.h"
-#include "ShaderUtil.h"
-#include "Utility.h"
+#include "Terrain/Terrain.h"
+#include "Terrain/TerrainSquare.h"
+#include "Terrain/TerrainGenerator.h"
+#include "Util/TerrainUtil.h"
+#include "Util/GLMath.h"
+#include "Terrain/BoxCoord.h"
+#include "Util/ShaderUtil.h"
+#include "Util/Utility.h"
+#include "Main/Settings.h"
 
 Vector2f Terrain::fountainLocation = Vector2f(0, 0);
 float Terrain::fountainHeight = 0.0f;

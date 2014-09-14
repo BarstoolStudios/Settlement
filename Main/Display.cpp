@@ -1,9 +1,9 @@
-#include <GL\glew.h>
-#include <GL\SDL.h>
+#include <GL/glew.h>
+#include <GL/SDL.h>
 #include <iostream>
-#include "Display.h"
-#include "Settings.h"
-#include "ShaderUtil.h"
+#include "Main/Display.h"
+#include "Main/Settings.h"
+#include "Util/ShaderUtil.h"
 
 Display::Display() {
 

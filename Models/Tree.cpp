@@ -1,6 +1,7 @@
-#include "Tree.h"
-#include "GLMath.h"
-#include "ShaderUtil.h"
+#include <GL/glew.h>
+#include "Models/Tree.h"
+#include "Util/GLMath.h"
+#include "Util/ShaderUtil.h"
 
 GLuint Tree::VAO = 0;
 GLuint Tree::shaderProgram = 0;

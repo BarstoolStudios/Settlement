@@ -1,7 +1,8 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include "GLMath.h"
+#include <GL/glew.h>
+#include "Util/GLMath.h"
 
 class Tree {
 

@@ -1,4 +1,4 @@
-#include "BoxCoord.h"
+#include "Terrain/BoxCoord.h"
 #include <ostream>
 #include <climits>
 

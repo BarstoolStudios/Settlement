@@ -1,11 +1,11 @@
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <vector>
 #include <future>
 #include <iostream>
-#include "TerrainGenerator.h"
-#include "TerrainUtil.h"
-#include "Utility.h"
-#include "Settings.h"
+#include "Terrain/TerrainGenerator.h"
+#include "Util/TerrainUtil.h"
+#include "Util/Utility.h"
+#include "Main/Settings.h"
 
 Vector2f TerrainGenerator::fountainLocation = Vector2f(0, 0);
 float TerrainGenerator::fountainHeight = 0.0f;

@@ -5,3 +5,22 @@
 *.vcxproj.user
 *.lastbuildstate
 *.log
+*.tlog
+*.idb
+*.pdb
+*.opensdf
+*.sdf
+*.suo
+
+# C++ Files
+
+*.obj
+*.dll
+
+# Linker Files
+
+*.ilk
+
+# Executables
+
+*.exe

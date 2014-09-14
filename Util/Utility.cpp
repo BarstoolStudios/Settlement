@@ -1,6 +1,6 @@
 #include <vector>
 #include <string>
-#include "Utility.h"
+#include "Util/Utility.h"
 
 bool Utility::distThreshold(float x1, float y1, float x2, float y2, float threshold) {
 	return ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (threshold * threshold);

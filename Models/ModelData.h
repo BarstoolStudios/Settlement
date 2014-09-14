@@ -2,8 +2,8 @@
 #define MODELDATA_H
 
 #include <vector>
-#include <GL\glew.h>
-#include "Skeleton.h"
+#include <GL/glew.h>
+#include "Models/Skeleton.h"
 
 class ModelData {
 	GLuint verticesVBO, normalsVBO, texCoordVBO, skeletonWeightsVBO, skeletonWeightIndicesVBO;

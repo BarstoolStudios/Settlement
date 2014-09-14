@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include "GLMath.h"
+#include "Util/GLMath.h"
 
 Matrix4f GLMath::getPerspective(float fov, float height, float width, float zNear, float zFar) {
 

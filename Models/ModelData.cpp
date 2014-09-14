@@ -1,6 +1,6 @@
 #include <vector>
-#include <GL\glew.h>
-#include "ModelData.h"
+#include <GL/glew.h>
+#include "Models/ModelData.h"
 
 ModelData::ModelData(GLuint verticesVBO, GLuint normalsVBO, GLuint texCoordVBO, GLuint skeletonWeightsVBO,
 	GLuint skeletonWeightIndicesVBO, int vertCount, Skeleton* skeleton)

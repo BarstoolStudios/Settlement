@@ -1,7 +1,7 @@
 #include <GL/SDL.h>
 #include <iostream>
-#include "Mouse.h"
-#include "Settings.h"
+#include "Main/Mouse.h"
+#include "Main/Settings.h"
 
 Mouse::Mouse() {
 	dx = dy = 0;
