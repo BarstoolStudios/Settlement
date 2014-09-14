@@ -1,0 +1,7 @@
+# Visual Studio Projct Files
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.lastbuildstate
+*.log
