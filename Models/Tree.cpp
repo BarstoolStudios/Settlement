@@ -117,6 +117,11 @@ void Tree::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Unbind / Disable Code
 	//------------------------------------------------------------------------------
+	glDrawArrays(GL_TRIANGLES, 0, vertCount);
+
+	//------------------------------------------------------------------------------
+	// Unbind / Disable Code
+	//------------------------------------------------------------------------------
 	glUseProgram(0);
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

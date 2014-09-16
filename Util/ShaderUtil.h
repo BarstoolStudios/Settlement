@@ -11,7 +11,7 @@ namespace ShaderUtil {
 
 	GLint createProgram(std::string modelName, std::vector<GLenum> shaders, bool printStatus);
 
-	GLint loadPNG(std::string pngName);
+	GLuint loadPNG(std::string pngName);
 
 	ModelData loadModel(std::string modelName);
 

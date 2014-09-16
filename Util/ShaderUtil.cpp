@@ -8,6 +8,7 @@
 #include "Util/GLMath.h"
 #include "Models/Face.h"
 #include "Util/Utility.h"
+#include "Util/lodepng.h"
 
 GLint ShaderUtil::loadShader(GLenum type, std::string shaderCode) {
 	GLint shader = glCreateShader(type);
@@ -105,8 +106,37 @@ GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shade
 	return shaderProgram;
 }
 
-GLint ShaderUtil::loadPNG(std::string pngName) {
-	return -1;
+GLuint ShaderUtil::loadPNG(std::string pngName) {
+	std::vector<unsigned char> image;
+	unsigned width;
+	unsigned height;
+	unsigned error;
+
+	GLuint textureHandle;
+	glGenTextures(1, &textureHandle);
+
+	if(textureHandle < 0) {
+		printToOutput(std::string("Failed to Generate Texture Handle: ") + pngName);
+	}
+
+	error = lodepng::decode(image, width, height, std::string("Resources/Textures/") + pngName);
+
+	if(error != 0) {
+		printToOutput(std::string("Failed to Decode: ") + pngName);
+		exit(-1);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureHandle);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(image[0]));
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return textureHandle;
 }
 
 ModelData ShaderUtil::loadModel(std::string modelName) {
