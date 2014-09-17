@@ -75,7 +75,7 @@ void Tree::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Create MVP Matrix
 	//------------------------------------------------------------------------------
-	Matrix4f MVP = projection * view;
+	Matrix4f MVP = projection * modelView;
 
 	//------------------------------------------------------------------------------
 	// Create Normal Matrix
