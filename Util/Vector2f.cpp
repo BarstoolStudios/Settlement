@@ -78,5 +78,5 @@ GLfloat Vector2f::dot(const Vector2f& v1, const Vector2f& v2) {
 }
 
 std::ostream& operator<<(std::ostream &strm, const Vector2f& vec) {
-	return strm << '(' << vec.x << ", " << vec.y << ")\n";
+	return strm << '(' << vec.x << ", " << vec.y << ")";
 }

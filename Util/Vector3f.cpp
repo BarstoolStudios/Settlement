@@ -106,5 +106,5 @@ Vector3f Vector3f::norm(const Vector3f& vec) {
 }
 
 std::ostream& operator<<(std::ostream &strm, const Vector3f& vec) {
-	return strm << '(' << vec.x << ", " << vec.y << ", " << vec.z << ")\n";
+	return strm << '(' << vec.x << ", " << vec.y << ", " << vec.z << ")";
 }
