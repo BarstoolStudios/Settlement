@@ -5,6 +5,8 @@
 #include <ostream>
 #include <vector>
 
+
+
 class Vector4f {
 public:
 	GLfloat x, y, z, w;
@@ -22,6 +24,8 @@ public:
 	Vector4f operator -= (const Vector4f&);
 	Vector4f operator *= (const Vector4f&);
 	Vector4f operator /= (const Vector4f&);
+
+	std::string toString();
 
 	static GLfloat dot(const Vector4f&, const Vector4f&);
 };
@@ -47,6 +51,8 @@ class Vector3f {
 		Vector3f operator -= (const Vector3f&);
 		Vector3f operator *= (const Vector3f&);
 		Vector3f operator /= (const Vector3f&);
+
+		std::string toString();
 
 		static GLfloat dot(const Vector3f&, const Vector3f&);
 		static Vector3f cross(const Vector3f&, const Vector3f&);
@@ -75,6 +81,8 @@ class Vector2f {
 		Vector2f operator -= (const Vector2f&);
 		Vector2f operator *= (const Vector2f&);
 		Vector2f operator /= (const Vector2f&);
+
+		std::string toString();
 
 		static GLfloat dot(const Vector2f&, const Vector2f&);
 };

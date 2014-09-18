@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <string>
 #include "Util/GLMath.h"
 
 Vector2f::Vector2f() {
@@ -73,10 +74,14 @@ Vector2f Vector2f::operator /= (const Vector2f& vec) {
 	return *this;
 }
 
+std::string Vector2f::toString() {
+	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) +  ")";
+}
+
 GLfloat Vector2f::dot(const Vector2f& v1, const Vector2f& v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
 std::ostream& operator<<(std::ostream &strm, const Vector2f& vec) {
-	return strm << '(' << vec.x << ", " << vec.y << ")";
+	return strm << '(' << vec.x << ", " << vec.y << ')';
 }

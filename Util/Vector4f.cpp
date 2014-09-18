@@ -1,4 +1,5 @@
 #include "Util/GLMath.h"
+#include <string>
 
 Vector4f::Vector4f() {
 	x = 0;
@@ -87,6 +88,10 @@ Vector4f Vector4f::operator /= (const Vector4f& vec) {
 	z /= vec.z;
 	w /= vec.w;
 	return *this;
+}
+
+std::string Vector4f::toString() {
+	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ", " + std::to_string(w) + ")";
 }
 
 GLfloat Vector4f::dot(const Vector4f& v1, const Vector4f& v2) {

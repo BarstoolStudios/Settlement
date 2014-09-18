@@ -2,6 +2,7 @@
 #define BOXCOORD_H
 
 #include <ostream>
+#include <string>
 
 class BoxCoord {
 public:
@@ -10,6 +11,7 @@ public:
 	BoxCoord();
 	BoxCoord(int x, int y);
 
+	std::string toString();
 };
 
 bool operator == (const BoxCoord&, const BoxCoord&);

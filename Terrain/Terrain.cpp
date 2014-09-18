@@ -221,7 +221,6 @@ void Terrain::update(Vector3f pos) {
 	TerrainSquare curr = *getSquareAt(pos.x, pos.z);
 
 	if (curr != prev) {
-		std::cout << curr.toString() <<'\n';
 		if (curr.x > prev.x) {
 			addSquare(curr.x + 1, curr.y);
 			addSquare(curr.x + 1, curr.y - 1);

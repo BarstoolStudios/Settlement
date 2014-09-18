@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <cmath>
+#include <string>
 #include "Util/GLMath.h"
 
 Vector3f::Vector3f() {
@@ -84,6 +85,10 @@ Vector3f Vector3f::operator /= (const Vector3f& vec) {
 	y /= vec.y;
 	z /= vec.z;
 	return *this;
+}
+
+std::string Vector3f::toString() {
+	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 }
 
 GLfloat Vector3f::dot(const Vector3f& v1, const Vector3f& v2) {

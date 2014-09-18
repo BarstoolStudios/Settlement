@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <iostream>
+#include <sstream>
 #include <list>
 #include "Main/App.h"
 #include "Main/Settings.h"
@@ -57,6 +58,10 @@ void App::input() {
 		mouse->setGrabbed(false);
 	if (keyboard->isKeyDown(Keyboard::KEY_N))
 		mouse->setGrabbed(true);
+
+	if(keyboard->wasKeyPressed(Keyboard::KEY_F3)) {
+		displayDebug = !displayDebug;
+	}
 }
 
 void App::update() {
@@ -80,17 +85,30 @@ void App::render() {
 		tree.draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
 	}
 
-	Text::draw("Hello World!!", Vector2f(22, 22), 12, camera->getTransform2D());
+
+	//------------------------------------------------------------------------------
+	// Display Debugging Info
+	//------------------------------------------------------------------------------
+	if(displayDebug) {
+
+		std::ostringstream debug;
+
+		debug	<< "Position: " << camera->getPosition() << '\n'
+				<< "Rotation: " << camera->getRotation() << '\n'
+				<< "Current Square: " << terrain->getSquareCoord(camera->getPosition().x, camera->getPosition().z).toString() << '\n';
+
+		Text::draw(debug.str(), Vector2f(22,22), 12, camera->getTransform2D());
+	}
 }
 
 void App::gameLoop() {
 
 	while (!display->isQuitRequested()) {
 		ShaderUtil::exitOnGLError("App Initialize");
-		update();
-		ShaderUtil::exitOnGLError("Update");
 		input();
 		ShaderUtil::exitOnGLError("Input");
+		update();
+		ShaderUtil::exitOnGLError("Update");
 		render();
 		ShaderUtil::exitOnGLError("Render");
 		display->update();

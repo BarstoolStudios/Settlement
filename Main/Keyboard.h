@@ -4,7 +4,6 @@
 #include <GL/SDL.h>
 
 class Keyboard {
-	const Uint8* keys;
 
 public:
 	Keyboard();
@@ -12,6 +11,10 @@ public:
 	void update();
 
 	bool isKeyDown(int key);
+
+	bool wasKeyPressed(int key);
+
+	bool wasKeyReleased(int key);
 
 	static const int KEY_0 = SDL_SCANCODE_0;
 	static const int KEY_1 = SDL_SCANCODE_1;
@@ -128,6 +131,12 @@ public:
 	static const int KEY_RALT = SDL_SCANCODE_RALT;
 	static const int KEY_RGUI = SDL_SCANCODE_RGUI;
 
+	static const int KEY_MAX = KEY_RGUI + 1;
+
+private:
+	const Uint8* keys;
+
+	Uint8 prev[KEY_MAX];
 };
 
 #endif

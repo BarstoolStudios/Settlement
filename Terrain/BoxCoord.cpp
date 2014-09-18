@@ -1,5 +1,6 @@
 #include "Terrain/BoxCoord.h"
 #include <ostream>
+#include <string>
 #include <climits>
 
 BoxCoord::BoxCoord() {
@@ -10,6 +11,10 @@ BoxCoord::BoxCoord() {
 BoxCoord::BoxCoord(int x, int y) {
 	this->x = x;
 	this->y = y;
+}
+
+std::string BoxCoord::toString() {
+	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) + ")";
 }
 
 bool operator == (const BoxCoord& b1, const BoxCoord& b2) {

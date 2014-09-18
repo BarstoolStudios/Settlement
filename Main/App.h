@@ -19,6 +19,8 @@ class App {
 	Terrain* terrain;
 	std::list<Tree>* trees;
 
+	bool displayDebug;
+
 	void loadResources();
 
 	void input();
