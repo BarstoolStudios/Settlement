@@ -116,13 +116,13 @@ GLuint ShaderUtil::loadPNG(std::string pngName) {
 	glGenTextures(1, &textureHandle);
 
 	if(textureHandle < 0) {
-		printToOutput(std::string("Failed to Generate Texture Handle: ") + pngName);
+		printToOutput(std::string("Failed to Generate Texture Handle: ") + pngName + '\n');
 	}
 
 	error = lodepng::decode(image, width, height, std::string("Resources/Textures/") + pngName);
 
 	if(error != 0) {
-		printToOutput(std::string("Failed to Decode: ") + pngName);
+		printToOutput(std::string("Failed to Decode: ") + pngName + '\n');
 		exit(-1);
 	}
 

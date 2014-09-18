@@ -5,6 +5,7 @@
 #include "Main/Settings.h"
 #include "Util/ShaderUtil.h"
 #include "Models/Tree.h"
+#include "Util/Text.h"
 
 App::App() {
 
@@ -34,6 +35,7 @@ App::~App() {
 
 void App::loadResources() {
 	Tree::loadResources();
+	Text::loadResources();
 }
 
 void App::input() {
@@ -72,11 +74,13 @@ void App::update() {
 
 void App::render() {
 
-	terrain->draw(camera->getProjection(), camera->getView(), Vector3f(1,1,1));
+	terrain->draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
 
 	for(auto& tree : *trees) {
 		tree.draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
 	}
+
+	Text::draw("Hello World!!", Vector2f(22, 22), 12, camera->getTransform2D());
 }
 
 void App::gameLoop() {
