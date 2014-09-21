@@ -3,6 +3,10 @@
 #include <string>
 #include <climits>
 
+//==============================================================================
+// Used by Terrain to Store Square Coordinates
+//==============================================================================
+
 BoxCoord::BoxCoord() {
 	x = INT_MAX;
 	y = INT_MAX;

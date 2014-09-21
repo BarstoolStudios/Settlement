@@ -2,6 +2,10 @@
 #include <GL/glew.h>
 #include "Models/ModelData.h"
 
+//==============================================================================
+// Used by Model Loader to Return Data To Caller
+//==============================================================================
+
 ModelData::ModelData(GLuint verticesVBO, GLuint normalsVBO, GLuint texCoordVBO, GLuint skeletonWeightsVBO,
 	GLuint skeletonWeightIndicesVBO, int vertCount, Skeleton* skeleton)
 	: 

@@ -8,6 +8,9 @@ Vector2f(0, -1), Vector2f(-1, -1), Vector2f(-1, 0), Vector2f(-1, 1)};
 
 int TerrainUtil::NOISE[256][256];
 
+//==============================================================================
+// Returns Perlin Noise Value at (x, y)
+//==============================================================================
 float TerrainUtil::perlin(int size, float x, float y) {
 	int nx, ny;
 	if (x < 0)
@@ -57,6 +60,9 @@ float TerrainUtil::perlin(int size, float x, float y) {
 	return (value + 1) / 2.0f;
 }
 
+//==============================================================================
+// Creates Hash Value for x
+//==============================================================================
 int TerrainUtil::hashX(int x) {
 	x += (x << 10);
 	x ^= (x >> 6);
@@ -66,6 +72,9 @@ int TerrainUtil::hashX(int x) {
 	return x;
 }
 
+//==============================================================================
+// Creates Hash Value for y
+//==============================================================================
 int TerrainUtil::hashY(int y) {
 	y += (y << 10);
 	y ^= (y >> 6);
@@ -77,6 +86,9 @@ int TerrainUtil::hashY(int y) {
 	return y;
 }
 
+//==============================================================================
+// Seeds NOISE with Random Ints Based on Game Seed
+//==============================================================================
 void TerrainUtil::seedNoise(int seed) {
 	std::srand(seed);
 	for (int i = 0; i < 256; i++) {
@@ -86,6 +98,9 @@ void TerrainUtil::seedNoise(int seed) {
 	}
 }
 
+//==============================================================================
+// Layers Octives of Perlin Noise
+//==============================================================================
 float TerrainUtil::octivate(int nOctives, int size, float x, float y) {
 	float oct = 0;
 	float amplitude = 0.5f;
@@ -98,10 +113,16 @@ float TerrainUtil::octivate(int nOctives, int size, float x, float y) {
 	return oct;
 }
 
+//==============================================================================
+// Generates Random Number Based on Hashes of x and y accessing NOISE
+//==============================================================================
 int TerrainUtil::random(int x, int y) {
 	return NOISE[std::abs(hashX(x + 1301081)) % 256][std::abs(hashY(y + 2751557)) % 256];
 }
 
+//==============================================================================
+// 5th Order Hermite Function (6x^5 - 15x^4 + 10x^4) - (6y^5 - 15y^4 + 10y^4)
+//==============================================================================
 float TerrainUtil::hermite(float x, float y) {
 	return ((10 - ((15 - 6 * x) * x)) * x * x * x) * ((10 - ((15 - 6 * y) * y)) * y * y * y);
 }

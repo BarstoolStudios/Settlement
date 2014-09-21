@@ -3,6 +3,9 @@
 #include <vector>
 #include "Util/ShaderUtil.h"
 
+//==============================================================================
+// Initialize Static Variables
+//==============================================================================
 float Text::textureWidth = 256;
 float Text::textureHeight = 512;
 
@@ -22,6 +25,9 @@ GLint Text::sPositionHandle = -1;
 GLint Text::sTexCoordHandle = -1;
 GLint Text::sTextureHandle = -1;
 
+//==============================================================================
+// Loads Static Resources
+//==============================================================================
 void Text::loadResources() {
 	textureHandle = ShaderUtil::loadPNG("alphabet_48.png");
 
@@ -42,6 +48,9 @@ void Text::loadResources() {
 
 }
 
+//==============================================================================
+// Draws Text On Screen Where startPos is Top-Left Corner of First Letter
+//==============================================================================
 void Text::draw(std::string text, Vector2f startPos, float width, Matrix3f transform) {
 	if(text.size() == 0)
 		return;
@@ -142,6 +151,9 @@ void Text::draw(std::string text, Vector2f startPos, float width, Matrix3f trans
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+//==============================================================================
+// Gets the Grid Coordinate of Letter
+//==============================================================================
 Vector2f Text::getLetterCoords(int n) {
 	return Vector2f((n - 33) % 10, (n - 33) / 10);
 }

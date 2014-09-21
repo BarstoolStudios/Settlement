@@ -3,6 +3,10 @@
 #include "Util/GLMath.h"
 #include "Util/ShaderUtil.h"
 
+
+//==============================================================================
+// Initialize Static Variables
+//==============================================================================
 GLuint Tree::VAO = 0;
 GLuint Tree::shaderProgram = 0;
 GLuint Tree::verticesVBO = 0;
@@ -16,11 +20,17 @@ GLint Tree::sNormalMatrixHandle = 0;
 
 int Tree::vertCount = 0;
 
+//==============================================================================
+// Constructor
+//==============================================================================
 Tree::Tree(Vector3f position) 
 	:
 	position(position)
 	{}
 
+//==============================================================================
+// Loads Model Data into OpenGL and Stores Handles in Static Variables
+//==============================================================================
 void Tree::loadResources() {
 
 	shaderProgram = ShaderUtil::createProgram("Tree", std::vector < GLenum > {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER}, true);
@@ -61,6 +71,9 @@ void Tree::loadResources() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+//==============================================================================
+// Draws Model
+//==============================================================================
 void Tree::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Create Model Matrix

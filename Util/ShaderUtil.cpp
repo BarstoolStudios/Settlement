@@ -10,6 +10,9 @@
 #include "Util/Utility.h"
 #include "Util/lodepng.h"
 
+//==============================================================================
+// Loads and Compiles Shader with openGL and Returns Handle to Shader
+//==============================================================================
 GLint ShaderUtil::loadShader(GLenum type, std::string shaderCode) {
 	GLint shader = glCreateShader(type);
 
@@ -22,6 +25,9 @@ GLint ShaderUtil::loadShader(GLenum type, std::string shaderCode) {
 	return shader;
 }
 
+//==============================================================================
+// Reads Shader from a Shader File and Returns the String of Characters
+//==============================================================================
 std::string ShaderUtil::readShaderFromFile(std::string shaderName) {
 	std::string text = "";
 	std::string line = "";
@@ -40,6 +46,9 @@ std::string ShaderUtil::readShaderFromFile(std::string shaderName) {
 	return text;
 }
 
+//==============================================================================
+// Creates a Shader Program with openGL based on What Shaders are Used
+//==============================================================================
 GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shaders, bool printStatus) {
 	std::string header = std::string(7, '-') + ' ' + modelName + " Shaders " + std::string(7, '-');
 
@@ -106,6 +115,9 @@ GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shade
 	return shaderProgram;
 }
 
+//==============================================================================
+// Loads PNG with lodepng and Creates a Texture. Returns Texture Handle
+//==============================================================================
 GLuint ShaderUtil::loadPNG(std::string pngName) {
 	std::vector<unsigned char> image;
 	unsigned width;
@@ -139,6 +151,9 @@ GLuint ShaderUtil::loadPNG(std::string pngName) {
 	return textureHandle;
 }
 
+//==============================================================================
+// Loads a Barstool Studios Model File (.bar)
+//==============================================================================
 ModelData ShaderUtil::loadModel(std::string modelName) {
 	std::string line = "";
 
@@ -247,6 +262,9 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 	return ModelData(verticesVBO, normalsVBO, texCoordVBO, 0, 0, vertCount, NULL);
 }
 
+//==============================================================================
+// Checks For an openGL Error and Exits if One Occured
+//==============================================================================
 void ShaderUtil::exitOnGLError(std::string errorMessage) {
 	GLenum errorValue = glGetError();
 
@@ -287,6 +305,9 @@ void ShaderUtil::exitOnGLError(std::string errorMessage) {
 	}
 }
 
+//==============================================================================
+// Prints the Compile Status of Shader
+//==============================================================================
 void ShaderUtil::printShaderStatus(std::string message, GLint handle) {
 	GLint status;
 	glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
@@ -302,6 +323,9 @@ void ShaderUtil::printShaderStatus(std::string message, GLint handle) {
 	}
 }
 
+//==============================================================================
+// Prints the Link Status of Program
+//==============================================================================
 void ShaderUtil::printProgramStatus(GLint handle) {
 	GLint linked;
 	glGetProgramiv(handle, GL_LINK_STATUS, &linked);
@@ -318,6 +342,9 @@ void ShaderUtil::printProgramStatus(GLint handle) {
 	}
 }
 
+//==============================================================================
+// Prints to Output Window in Visual Studio
+//==============================================================================
 void ShaderUtil::printToOutput(std::string str) {
 	OutputDebugString(str.c_str());
 }

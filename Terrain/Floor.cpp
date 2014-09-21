@@ -5,6 +5,11 @@
 #include "Util/GLMath.h"
 #include "Util/ShaderUtil.h"
 
+
+//==============================================================================
+// Debugging Class for Drawing a Flat Ground -- Use instead of Terrain
+//==============================================================================
+
 std::string Floor::vertexShaderCode =
 	"uniform mat4 uMVP;\n"
 	"in vec3 iPosition;\n\n"

@@ -2,6 +2,9 @@
 #include <cmath>
 #include "Util/GLMath.h"
 
+//==============================================================================
+// Constructs Perspective Matrix
+//==============================================================================
 Matrix4f GLMath::getPerspective(float fov, float height, float width, float zNear, float zFar) {
 
 	Matrix4f result;
@@ -19,6 +22,9 @@ Matrix4f GLMath::getPerspective(float fov, float height, float width, float zNea
 	return result;
 }
 
+//==============================================================================
+// Constructs Orthographic Matrix
+//==============================================================================
 Matrix4f GLMath::getOrthographic(float height, float width, float zNear, float zFar, float scalingFactor) {
 	
 	Matrix4f result;
@@ -31,6 +37,9 @@ Matrix4f GLMath::getOrthographic(float height, float width, float zNear, float z
 	return result;
 }
 
+//==============================================================================
+// Constructs Transformation Matrix from 
+//==============================================================================
 Matrix3f GLMath::getTransform2D(float height, float width) {
 
 	Matrix3f result;
@@ -41,6 +50,9 @@ Matrix3f GLMath::getTransform2D(float height, float width) {
 	return result;
 }
 
+//==============================================================================
+// Constructs a Translation Matrix
+//==============================================================================
 Matrix4f GLMath::getTranslation(float x, float y, float z) {
 
 	Matrix4f result;
@@ -52,6 +64,9 @@ Matrix4f GLMath::getTranslation(float x, float y, float z) {
 	return result;
 }
 
+//==============================================================================
+// Constructs a Scaling Matrix
+//==============================================================================
 Matrix4f GLMath::getScale(float x, float y, float z) {
 	
 	Matrix4f result;
@@ -63,6 +78,9 @@ Matrix4f GLMath::getScale(float x, float y, float z) {
 	return result;
 }
 
+//==============================================================================
+// Constructs a Rotation Matrix
+//==============================================================================
 Matrix4f GLMath::getRotation(float x, float y, float z) {
 	
 	Matrix4f result;
@@ -109,6 +127,9 @@ Matrix4f GLMath::getRotation(float x, float y, float z) {
 	return result;
 }
 
+//==============================================================================
+// Returns the 3x3 Portion of a 4x4 Matrix
+//==============================================================================
 Matrix3f GLMath::fourToThree(const Matrix4f& m4) {
 	
 	Matrix3f m3;

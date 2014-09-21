@@ -1,5 +1,8 @@
 #include "Util/GLMath.h"
 
+//==============================================================================
+// Constructors
+//==============================================================================
 Matrix4f::Matrix4f() {
 	m00 = 1; m10 = 0; m20 = 0; m30 = 0;
 	m01 = 0; m11 = 1; m21 = 0; m31 = 0;
@@ -26,6 +29,9 @@ Matrix4f::Matrix4f(
 	m03(m03), m13(m13), m23(m23), m33(m33)
 	{}
 
+//==============================================================================
+// Returns Matrix as Array (Row-Major)
+//==============================================================================
 void Matrix4f::asArray(GLfloat* arr) {
 	arr[0] = m00; arr[1] = m10; arr[2] = m20; arr[3] = m30;
 	arr[4] = m01; arr[5] = m11; arr[6] = m21; arr[7] = m31;
@@ -33,6 +39,9 @@ void Matrix4f::asArray(GLfloat* arr) {
 	arr[12] = m03; arr[13] = m13; arr[14] = m23; arr[15] = m33;
 }
 
+//==============================================================================
+// Takes Transpose of Current Matrix (In Place)
+//==============================================================================
 void Matrix4f::transpose() {
 	Matrix4f temp(*this);
 
@@ -53,6 +62,9 @@ void Matrix4f::transpose() {
 	m32 = temp.m23;
 }
 
+//==============================================================================
+// Takes Inverse of Current Matrix (In Place)
+//==============================================================================
 void Matrix4f::inverse() {
 	// Find Inverse Determinant
 	GLfloat invDet = 1.0f / determinant();
@@ -100,6 +112,9 @@ void Matrix4f::inverse() {
 	m33 = c33 * invDet;
 }
 
+//==============================================================================
+// Returns Determinate of Current Matrix
+//==============================================================================
 GLfloat Matrix4f::determinant() {
 	return	 m00 * Matrix3f(m11, m21, m31, m12, m22, m32, m13, m23, m33).determinant()
 			-m01 * Matrix3f(m10, m20, m30, m12, m22, m32, m13, m23, m33).determinant()
@@ -107,6 +122,9 @@ GLfloat Matrix4f::determinant() {
 			-m03 * Matrix3f(m10, m20, m30, m12, m22, m32, m13, m23, m33).determinant();
 }
 
+//==============================================================================
+// Matrix Matrix Multiplication
+//==============================================================================
 Matrix4f Matrix4f::operator * (const Matrix4f& m) {
 	Matrix4f temp;
 
@@ -143,6 +161,9 @@ Matrix4f Matrix4f::operator * (const Matrix4f& m) {
 	return temp;
 }
 
+//==============================================================================
+// Matrix Vector Multiplication
+//==============================================================================
 Vector4f Matrix4f::operator * (const Vector4f& v) {
 	Vector4f temp;
 
@@ -159,6 +180,9 @@ Vector4f Matrix4f::operator * (const Vector4f& v) {
 	return temp;
 }
 
+//==============================================================================
+// Overloads << for Streams
+//==============================================================================
 std::ostream& operator<<(std::ostream &strm, const Matrix4f& mat) {
 	return strm << mat.m00 << ' ' << mat.m10 << ' ' << mat.m20 << ' ' << mat.m30 << '\n'
 				<< mat.m01 << ' ' << mat.m11 << ' ' << mat.m21 << ' ' << mat.m31 << '\n'

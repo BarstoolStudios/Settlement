@@ -21,12 +21,18 @@ Vector3f::Vector3f(GLfloat a, GLfloat b, GLfloat c) {
 	z = c;
 }
 
+//==============================================================================
+// Pushes Vector's floats onto floats in order <x, y, z>
+//==============================================================================
 void Vector3f::pushOn(std::vector<GLfloat>* floats) {
 	floats->push_back(x);
 	floats->push_back(y);
 	floats->push_back(z);
 }
 
+//==============================================================================
+// Overloaded Operators for Vector on Vector Operations. * is piecewise
+//==============================================================================
 Vector3f Vector3f::operator + (const Vector3f& vec) {
 	Vector3f temp;
 	temp.x = x + vec.x;
@@ -87,14 +93,23 @@ Vector3f Vector3f::operator /= (const Vector3f& vec) {
 	return *this;
 }
 
+//==============================================================================
+// Returns string Representation of Vector
+//==============================================================================
 std::string Vector3f::toString() {
 	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 }
 
+//================================s==============================================
+// Returns v1 dot v2
+//==============================================================================
 GLfloat Vector3f::dot(const Vector3f& v1, const Vector3f& v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 
+//==============================================================================
+// Returns v1 cross v2
+//==============================================================================
 Vector3f Vector3f::cross(const Vector3f& v1, const Vector3f& v2) {
 	Vector3f result;
 
@@ -105,11 +120,17 @@ Vector3f Vector3f::cross(const Vector3f& v1, const Vector3f& v2) {
 	return result;
 }
 
+//==============================================================================
+// Returns Normalized vec
+//==============================================================================
 Vector3f Vector3f::norm(const Vector3f& vec) {
 	GLfloat len = std::sqrt((vec.x * vec.x) + (vec.y * vec.y) + (vec.z * vec.z));
 	return Vector3f(vec.x / len, vec.y / len, vec.z / len);
 }
 
+//==============================================================================
+// Overloads << for Streams
+//==============================================================================
 std::ostream& operator<<(std::ostream &strm, const Vector3f& vec) {
 	return strm << '(' << vec.x << ", " << vec.y << ", " << vec.z << ")";
 }

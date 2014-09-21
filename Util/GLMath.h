@@ -15,6 +15,8 @@ public:
 	Vector4f(const Vector4f& vec);
 	Vector4f(GLfloat, GLfloat, GLfloat, GLfloat);
 
+	void pushOn(std::vector<GLfloat>* floats);
+
 	Vector4f operator + (const Vector4f&);
 	Vector4f operator - (const Vector4f&);
 	Vector4f operator * (const Vector4f&);

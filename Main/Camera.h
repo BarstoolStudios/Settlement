@@ -43,8 +43,6 @@ public:
 
 	void resetPosition();
 
-	void updateMotion();
-
 	Matrix4f getProjection();
 
 	Matrix4f getView();

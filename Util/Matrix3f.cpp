@@ -1,5 +1,8 @@
 #include "Util/GLMath.h"
 
+//==============================================================================
+// Constructors
+//==============================================================================
 Matrix3f::Matrix3f() {
 	m00 = 1; m10 = 0; m20 = 0;
 	m01 = 0; m11 = 1; m21 = 0;
@@ -28,12 +31,18 @@ Matrix3f::Matrix3f(
 	m02(m02), m12(m12), m22(m22)
 	{}
 
+//==============================================================================
+// Returns Matrix as Array (Row-Major)
+//==============================================================================
 void Matrix3f::asArray(GLfloat* arr) {
 	arr[0] = m00; arr[1] = m10; arr[2] = m20;
 	arr[3] = m01; arr[4] = m11; arr[5] = m21;
 	arr[6] = m02; arr[7] = m12; arr[8] = m22;
 }
 
+//==============================================================================
+// Takes Transpose of Current Matrix (In Place)
+//==============================================================================
 void Matrix3f::transpose() {
 	Matrix3f temp(*this);
 
@@ -47,6 +56,9 @@ void Matrix3f::transpose() {
 	m21 = temp.m12;
 }
 
+//==============================================================================
+// Takes Inverse of Current Matrix (In Place)
+//==============================================================================
 void Matrix3f::inverse() {
 	// Find Inverse Determinant
 	GLfloat invDet = 1.0f / determinant();
@@ -78,6 +90,9 @@ void Matrix3f::inverse() {
 	m22 = c22 * invDet;
 }
 
+//==============================================================================
+// Returns Determinate of Current Matrix
+//==============================================================================
 GLfloat Matrix3f::determinant() {
 	
 	return	 m00 * Matrix2f(m11, m21, m12, m22).determinant()
@@ -86,6 +101,9 @@ GLfloat Matrix3f::determinant() {
 
 }
 
+//==============================================================================
+// Matrix Matrix Multiplication
+//==============================================================================
 Matrix3f Matrix3f::operator * (const Matrix3f& m) {
 	Matrix3f temp;
 
@@ -112,6 +130,9 @@ Matrix3f Matrix3f::operator * (const Matrix3f& m) {
 	return temp;
 }
 
+//==============================================================================
+// Matrix Vector Multiplication
+//==============================================================================
 Vector3f Matrix3f::operator * (const Vector3f& v) {
 	Vector3f temp;
 
@@ -126,6 +147,9 @@ Vector3f Matrix3f::operator * (const Vector3f& v) {
 	return temp;
 }
 
+//==============================================================================
+// Overloads << for Streams
+//==============================================================================
 std::ostream& operator<<(std::ostream &strm, const Matrix3f& mat) {
 	return strm << mat.m00 << ' ' << mat.m10 << ' ' << mat.m20 << '\n'
 				<< mat.m01 << ' ' << mat.m11 << ' ' << mat.m21 << '\n'

@@ -16,10 +16,16 @@
 #include "Util/Utility.h"
 #include "Main/Settings.h"
 
+//==============================================================================
+// Initialize Static Variables
+//==============================================================================
 Vector2f Terrain::fountainLocation = Vector2f(0, 0);
 float Terrain::fountainHeight = 0.0f;
 int Terrain::fountainRadius = -1;
 
+//==============================================================================
+// Constructors
+//==============================================================================
 Terrain::Terrain() : Terrain(Vector2f(0, 0)) {}
 
 Terrain::Terrain(Vector2f startPosition) {
@@ -141,6 +147,9 @@ Terrain::Terrain(Vector2f startPosition) {
 
 }
 
+//==============================================================================
+// Returns the Grid Coordinate of Top Left Corner of Square that Contains (x, y)
+//==============================================================================
 BoxCoord Terrain::getSquareCoord(float x, float z) {
 	int sx, sz;
 	if (x >= 0)
@@ -155,6 +164,9 @@ BoxCoord Terrain::getSquareCoord(float x, float z) {
 	return BoxCoord(sx, sz);
 }
 
+//==============================================================================
+// Returns Square that Contains (x, y)
+//==============================================================================
 TerrainSquare* Terrain::getSquareAt(float x, float y) {
 	int sx, sz;
 	if (x >= 0)
@@ -174,6 +186,9 @@ TerrainSquare* Terrain::getSquareAt(float x, float y) {
 	throw std::invalid_argument(std::string("Square containing (") + std::to_string(x) + ", " + std::to_string(y) + ") is not loaded");
 }
 
+//==============================================================================
+// Draws Terrain
+//==============================================================================
 void Terrain::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Create MVP Matrix
@@ -217,6 +232,9 @@ void Terrain::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+//==============================================================================
+// Update Terrain
+//==============================================================================
 void Terrain::update(Vector3f pos) {
 	TerrainSquare curr = *getSquareAt(pos.x, pos.z);
 
@@ -286,6 +304,9 @@ void Terrain::update(Vector3f pos) {
 	generatorMutex.unlock();
 }
 
+//==============================================================================
+// Creates Thread to Generate Square
+//==============================================================================
 std::future<void>* Terrain::addSquare(int x, int y) {
 	BoxCoord b(x, y);
 	if (!Utility::contains(squareCoordList, b)) {
@@ -296,6 +317,9 @@ std::future<void>* Terrain::addSquare(int x, int y) {
 	return NULL;
 }
 
+//==============================================================================
+// Deletes Square and Allows Other Squares to be Drawn
+//==============================================================================
 void Terrain::deleteSquare(TerrainSquare square) {
 		for (int i = 0; i < 9; i++) {
 			if (memory[i] != NULL && memory[i]->x == square.x && memory[i]->y == square.y) {
@@ -307,6 +331,9 @@ void Terrain::deleteSquare(TerrainSquare square) {
 		Utility::remove(squares, square);
 }
 
+//==============================================================================
+// Gets the Terrain Square with BoxCoord (x, y)
+//==============================================================================
 TerrainSquare* Terrain::getSquare(int x, int y) {
 	for (TerrainSquare& square : squares) {
 		if (square.x == x && square.y == y) {
@@ -316,6 +343,9 @@ TerrainSquare* Terrain::getSquare(int x, int y) {
 	throw std::invalid_argument(std::string("Square [") + std::to_string(x) + ", " + std::to_string(y) + "] is not loaded");
 }
 
+//==============================================================================
+// Gets Index in Memory of First Available Square
+//==============================================================================
 int Terrain::getAvailableSquare() {
 	for (int i = 0; i < 9; i++) {
 		if (memory[i] == NULL)
@@ -324,6 +354,9 @@ int Terrain::getAvailableSquare() {
 	return -1;
 }
 
+//==============================================================================
+// Gets the Height At (x, y)
+//==============================================================================
 float Terrain::getHeightAt(float x, float y) {
 	if (fountainRadius != -1 &&
 		Utility::distThreshold(fountainLocation.x, fountainLocation.y, x, y, fountainRadius))
@@ -331,22 +364,37 @@ float Terrain::getHeightAt(float x, float y) {
 	return TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, x, y) * (float) TERRAIN_HEIGHT;
 }
 
+//==============================================================================
+// Returns the Center of Influence
+//==============================================================================
 Vector2f Terrain::getCenterOfInfluence() {
 	return fountainLocation;
 }
 
+//==============================================================================
+// Returns Whether Player has Placed Fountain
+//==============================================================================
 bool Terrain::isFountainPlaced() {
 	return fountainRadius != -1;
 }
 
+//==============================================================================
+// Returns the Size of Influence as Radius
+//==============================================================================
 int Terrain::getInfluenceRadius() {
 	return fountainRadius;
 }
 
+//==============================================================================
+// Places Fountain and Reconstructs Terrain
+//==============================================================================
 void Terrain::placeFountain(int x, int z, int r) {
 
 }
 
+//==============================================================================
+// Updates VBO
+//==============================================================================
 void Terrain::updateVBO() {
 	generatorMutex.lock();
 		while (squaresToBuffer.size() > 0) {

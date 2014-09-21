@@ -7,6 +7,10 @@
 #include "Main/Mouse.h"
 #include "Main/Keyboard.h"
 
+
+//==============================================================================
+// Constructors
+//==============================================================================
 Camera::Camera() : Camera(Vector2f(0,0)) {}
 
 Camera::Camera(Vector2f pos) :	position(pos.x, 0, pos.y), 
@@ -23,19 +27,27 @@ Camera::Camera(Vector2f pos) :	position(pos.x, 0, pos.y),
 	makeView();
 }
 
+//==============================================================================
+// Tests Whether Player is On the Ground
+//==============================================================================
 bool Camera::isOnGround() {
 	return position.y <= yBottom;
 }
 
+//==============================================================================
+// Updates the Camera
+//==============================================================================
 void Camera::update(GameTimer& timer, Terrain& terrain) {
 	makeView();
 	//delta = timer.getDelta();
 	delta = 16;
-	updateMotion();
 	individualPhysics(terrain);
 	updatePreviousVector();
 }
 
+//==============================================================================
+// Called by Update -- Calculates Player Physics
+//==============================================================================
 void Camera::individualPhysics(Terrain& terrain) {
 	yBottom = terrain.getHeightAt(position.x, position.z);
 
@@ -49,6 +61,9 @@ void Camera::individualPhysics(Terrain& terrain) {
 	}
 }
 
+//==============================================================================
+// Handles Input from the User
+//==============================================================================
 void Camera::input(Keyboard& keyboard, Mouse& mouse) {
 
 	if(keyboard.isKeyDown(Keyboard::KEY_LSHIFT)) {
@@ -127,34 +142,48 @@ void Camera::input(Keyboard& keyboard, Mouse& mouse) {
 	}
 }
 
+//==============================================================================
+// Stores Previous Position
+//==============================================================================
 void Camera::updatePreviousVector() {
 	previous.x = position.x;
 	previous.y = position.y;
 	previous.z = position.z;
 }
 
+//==============================================================================
+// Sets Current Position to Previous Position
+//==============================================================================
 void Camera::resetPosition() {
 	position.x = previous.x;
 	position.y = previous.y;
 	position.z = previous.z;
 }
 
-void Camera::updateMotion() {
-
-}
-
+//==============================================================================
+// Returns the Current Projection Matrix -- Perspective or Orthographic
+//==============================================================================
 Matrix4f Camera::getProjection() {
 	return (topView ? orthographic : perspective);
 }
 
+//==============================================================================
+// Returns the View Matrix
+//==============================================================================
 Matrix4f Camera::getView() {
 	return view;
 }
 
+//==============================================================================
+// Gets a 2D Transformation based on height and width of screen
+//==============================================================================
 Matrix3f Camera::getTransform2D() {
 	return transform2D;
 }
 
+//==============================================================================
+// Builds the View Based on Current position and rotation 
+//==============================================================================
 void Camera::makeView() {
 	if (!topView) {
 		Matrix4f rot = GLMath::getRotation(rotation.x, rotation.y, rotation.z);
@@ -167,45 +196,74 @@ void Camera::makeView() {
 	}
 }
 
+//==============================================================================
+// Returns position
+//==============================================================================
 Vector3f Camera::getPosition() {
 	return position;
 }
 
+//==============================================================================
+// Returns rotation
+//==============================================================================
 Vector3f Camera::getRotation() {
 	return rotation;
 }
 
+//==============================================================================
+// Sets position
+//==============================================================================
 void Camera::setPosition(float x, float y, float z) {
 	position.x = x;
 	position.y = y;
 	position.z = z;
 }
 
+//==============================================================================
+// Sets Rotation
+//==============================================================================
 void Camera::setRotation(float x, float y, float z) {
 	rotation.x = x;
 	rotation.y = y;
 	rotation.z = z;
 }
 
+//==============================================================================
+// Changes to State where Camera Looks Down and has Orthographic Projection
+//==============================================================================
 void Camera::setTopView(bool state) {
 	topView = state;
 }
 
+//==============================================================================
+// Returns Whether Camera is Currently in TopView Mode
+//==============================================================================
 bool Camera::isTopView() {
 	return topView;
 }
 
+//==============================================================================
+// Transforms Coordinates from Screen to World
+//==============================================================================
 Vector2f Camera::screenToWorld(Vector2f screenCoord, int height, int width) {
 	return Vector2f(((screenCoord.x - (width / 2)) / CAMERA_ORTHO_SCALING) + position.x
 		, (((height / 2) - screenCoord.y) / CAMERA_ORTHO_SCALING) + position.z);
 }
 
+//==============================================================================
+// Transforms Coordinates from World to Screen
+//==============================================================================
 Vector2f Camera::worldToScreen(Vector2f worldCoord, int height, int width) {
 	return Vector2f(((worldCoord.x - position.x) * CAMERA_ORTHO_SCALING) + (width / 2),
 		((height / 2) - (worldCoord.y - position.y) * CAMERA_ORTHO_SCALING));
 }
 
+//==============================================================================
+// Updates Projection Matrices
+//==============================================================================
 void Camera::updateProjection(float fov, float height, float width, float zNear, float zFar) {
 	perspective = GLMath::getPerspective(fov, height, width, zNear, zFar);
 	orthographic = GLMath::getOrthographic(height, width, zNear, zFar, CAMERA_ORTHO_SCALING);
+
+	transform2D = GLMath::getTransform2D(height, width);
 }

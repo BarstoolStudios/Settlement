@@ -7,16 +7,25 @@
 #include "Util/Utility.h"
 #include "Main/Settings.h"
 
+//==============================================================================
+// Initialize Static Variables
+//==============================================================================
 Vector2f TerrainGenerator::fountainLocation = Vector2f(0, 0);
 float TerrainGenerator::fountainHeight = 0.0f;
 int TerrainGenerator::fountainRadius = -1;
 
+//==============================================================================
+// Sets Static Variables When Fountain Is Placed
+//==============================================================================
 void TerrainGenerator::setFountain(Vector2f location, float height, int radius) {
 	fountainLocation = location;
 	fountainHeight = height;
 	fountainRadius = radius;
 }
 
+//==============================================================================
+// Constructor
+//==============================================================================
 TerrainGenerator::TerrainGenerator(int x, int y, std::vector<TerrainSquare>& squaresToBuffer, std::mutex& generatorMutex) {
 	X = x;
 	Y = y;
@@ -39,6 +48,9 @@ TerrainGenerator::TerrainGenerator(int x, int y, std::vector<TerrainSquare>& squ
 	}
 }
 
+//==============================================================================
+// Run Function Called By Thread
+//==============================================================================
 void TerrainGenerator::run(int X, int Y, bool shouldAdjust, std::mutex* generatorMutex, std::vector<TerrainSquare>* squaresToBuffer) {
 
 	float yVals[TERRAIN_SQUARE_SIZE + 1][TERRAIN_SQUARE_SIZE + 1];
@@ -113,10 +125,16 @@ void TerrainGenerator::run(int X, int Y, bool shouldAdjust, std::mutex* generato
 	generatorMutex->unlock();
 }
 
+//==============================================================================
+// Starts New Thread
+//==============================================================================
 std::future<void>* TerrainGenerator::start() {
 	return new std::future<void>(std::async(std::launch::async, TerrainGenerator::run, X, Y, shouldAdjust, generatorMutex, squaresToBuffer));
 }
 
+//==============================================================================
+// Returns the Grid Coordinate of Top Left Corner of Square that Contains (x, y)
+//==============================================================================
 BoxCoord TerrainGenerator::getSquare(float x, float z) {
 	int nx, nz;
 

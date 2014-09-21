@@ -4,6 +4,10 @@
 #include <string>
 #include "Terrain/TerrainSquare.h"
 
+//==============================================================================
+// Stores Data For Squares
+//==============================================================================
+
 TerrainSquare::TerrainSquare() {
 	x = INT_MAX;
 	y = INT_MAX;

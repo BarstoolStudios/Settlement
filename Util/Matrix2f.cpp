@@ -1,5 +1,8 @@
 #include "Util/GLMath.h"
 
+//==============================================================================
+// Constructors
+//==============================================================================
 Matrix2f::Matrix2f() {
 	m00 = 0; m10 = 0;
 	m01 = 0; m11 = 0;
@@ -18,11 +21,17 @@ Matrix2f::Matrix2f(Matrix2f& mat) {
 	m01 = mat.m01; m11 = mat.m11;
 }
 
+//==============================================================================
+// Returns Matrix as Array (Row-Major)
+//==============================================================================
 void Matrix2f::asArray(GLfloat* arr) {
 	arr[0] = m00; arr[1] = m10;
-	arr[3] = m01; arr[4] = m11;
+	arr[2] = m01; arr[3] = m11;
 }
 
+//==============================================================================
+// Takes Transpose of Current Matrix (In Place)
+//==============================================================================
 void Matrix2f::transpose() {
 	Matrix2f temp(*this);
 
@@ -30,6 +39,9 @@ void Matrix2f::transpose() {
 	m10 = temp.m01;
 }
 
+//==============================================================================
+// Takes Inverse of Current Matrix (In Place)
+//==============================================================================
 void Matrix2f::inverse() {
 
 	GLfloat a = m00;
@@ -44,10 +56,16 @@ void Matrix2f::inverse() {
 	m01 *= -invDet;
 }
 
+//==============================================================================
+// Returns Determinate of Current Matrix
+//==============================================================================
 GLfloat Matrix2f::determinant() {
 	return (m00 * m11) - (m10 * m01);
 }
 
+//==============================================================================
+// Matrix Matrix Multiplication
+//==============================================================================
 Matrix2f Matrix2f::operator * (const Matrix2f& m) {
 	Matrix2f temp;
 
@@ -66,6 +84,9 @@ Matrix2f Matrix2f::operator * (const Matrix2f& m) {
 	return temp;
 }
 
+//==============================================================================
+// Matrix Vector Multiplication
+//==============================================================================
 Vector2f Matrix2f::operator * (const Vector2f& v) {
 	Vector2f temp;
 
@@ -78,6 +99,9 @@ Vector2f Matrix2f::operator * (const Vector2f& v) {
 	return temp;
 }
 
+//==============================================================================
+// Overloads << for Streams
+//==============================================================================
 std::ostream& operator<<(std::ostream &strm, const Matrix2f& mat) {
 	return strm << mat.m00 << ' ' << mat.m10 << '\n'
 				<< mat.m01 << ' ' << mat.m11 << '\n';

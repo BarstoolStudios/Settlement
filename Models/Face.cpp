@@ -1,5 +1,9 @@
 #include "Models/Face.h"
 
+//==============================================================================
+// Used When Loading Models to Store Face Data
+//==============================================================================
+
 Face::Face(int vertexIndices[3]) {
 	this->vertexIndices[0] = vertexIndices[0];
 	this->vertexIndices[1] = vertexIndices[1];

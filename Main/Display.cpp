@@ -5,6 +5,9 @@
 #include "Main/Settings.h"
 #include "Util/ShaderUtil.h"
 
+//==============================================================================
+// Constructor Display
+//==============================================================================
 Display::Display() {
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -58,11 +61,17 @@ Display::Display() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+//==============================================================================
+// Update Display
+//==============================================================================
 void Display::update() {
 	SDL_GL_SwapWindow(window);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+//==============================================================================
+// Destroy Display
+//==============================================================================
 void Display::destroy() {
 
 	SDL_GL_DeleteContext(GLcontext);
@@ -71,6 +80,9 @@ void Display::destroy() {
 
 }
 
+//==============================================================================
+// Returns Whether User Requested to Quit
+//==============================================================================
 bool Display::isQuitRequested() {
 	return (bool) SDL_QuitRequested();
 }

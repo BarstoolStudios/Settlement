@@ -2,6 +2,9 @@
 #include <string>
 #include "Util/GLMath.h"
 
+//==============================================================================
+// Constructors
+//==============================================================================
 Vector2f::Vector2f() {
 	x = 0;
 	y = 0;
@@ -17,11 +20,17 @@ Vector2f::Vector2f(GLfloat a, GLfloat b) {
 	y = b;
 }
 
+//==============================================================================
+// Pushes Vector's floats onto floats in order <x, y>
+//==============================================================================
 void Vector2f::pushOn(std::vector<GLfloat>* floats) {
 	floats->push_back(x);
 	floats->push_back(y);
 }
 
+//==============================================================================
+// Overloaded Operators for Vector on Vector Operations. * is piecewise
+//==============================================================================
 Vector2f Vector2f::operator + (const Vector2f& vec) {
 	Vector2f temp;
 	temp.x = x + vec.x;
@@ -74,14 +83,23 @@ Vector2f Vector2f::operator /= (const Vector2f& vec) {
 	return *this;
 }
 
+//==============================================================================
+// Returns string Representation of Vector
+//==============================================================================
 std::string Vector2f::toString() {
 	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) +  ")";
 }
 
+//==============================================================================
+// Returns v1 dot v2
+//==============================================================================
 GLfloat Vector2f::dot(const Vector2f& v1, const Vector2f& v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
+//==============================================================================
+// Overloads << for Streams
+//==============================================================================
 std::ostream& operator<<(std::ostream &strm, const Vector2f& vec) {
 	return strm << '(' << vec.x << ", " << vec.y << ')';
 }
