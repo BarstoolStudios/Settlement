@@ -41,7 +41,7 @@ void Tree::loadResources() {
 	sMVPHandle = glGetUniformLocation(shaderProgram, "uMVP");
 	sNormalMatrixHandle = glGetUniformLocation(shaderProgram, "uNormalMatrix");
 
-	ModelData data = ShaderUtil::loadModel("Tree");
+	ModelData data = ShaderUtil::loadModel("tree");
 
 	verticesVBO = data.getVerticesVBO();
 	normalsVBO = data.getNormalsVBO();

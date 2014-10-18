@@ -6,14 +6,14 @@
 // Used by Model Loader to Return Data To Caller
 //==============================================================================
 
-ModelData::ModelData(GLuint verticesVBO, GLuint normalsVBO, GLuint texCoordVBO, GLuint skeletonWeightsVBO,
-	GLuint skeletonWeightIndicesVBO, int vertCount, Skeleton* skeleton)
+ModelData::ModelData(GLuint verticesVBO, GLuint normalsVBO, GLuint texCoordVBO, GLuint boneWeightsVBO,
+	GLuint boneIndicesVBO, int vertCount, Skeleton* skeleton)
 	: 
 	verticesVBO(verticesVBO), 
 	normalsVBO(normalsVBO),
 	texCoordVBO(texCoordVBO),
-	skeletonWeightsVBO(skeletonWeightsVBO),
-	skeletonWeightIndicesVBO(skeletonWeightIndicesVBO),
+	boneWeightsVBO(boneWeightsVBO),
+	boneIndicesVBO(boneIndicesVBO),
 	vertCount(vertCount),
 	skeleton(skeleton)
 	{}
@@ -30,12 +30,12 @@ GLuint ModelData::getTexCoordVBO() {
 	return texCoordVBO;
 }
 
-GLuint ModelData::getSkeletonWeightsVBO() {
-	return skeletonWeightsVBO;
+GLuint ModelData::getBoneWeightsVBO() {
+	return boneWeightsVBO;
 }
 
-GLuint ModelData::getSkeletonWeightIndices() {
-	return skeletonWeightIndicesVBO;
+GLuint ModelData::getBoneIndicesVBO() {
+	return boneIndicesVBO;
 }
 
 int ModelData::getVertCount() {

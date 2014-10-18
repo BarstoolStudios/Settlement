@@ -6,15 +6,15 @@
 #include "Models/Skeleton.h"
 
 class ModelData {
-	GLuint verticesVBO, normalsVBO, texCoordVBO, skeletonWeightsVBO, skeletonWeightIndicesVBO;
+	GLuint verticesVBO, normalsVBO, texCoordVBO, boneWeightsVBO, boneIndicesVBO;
 
 	int vertCount;
 
 	Skeleton* skeleton;
 
 public:
-	ModelData(GLuint verticesVBO, GLuint normalsVBO, GLuint texCoordVBO, GLuint skeletonWeightsVBO,
-		GLuint skeletonWeightIndicesVBO, int vertCount, Skeleton* skeleton);
+	ModelData(GLuint verticesVBO, GLuint normalsVBO, GLuint texCoordVBO, GLuint boneWeightsVBO,
+		GLuint boneIndicesVBO, int vertCount, Skeleton* skeleton);
 
 	GLuint getVerticesVBO();
 
@@ -22,9 +22,9 @@ public:
 
 	GLuint getTexCoordVBO();
 
-	GLuint getSkeletonWeightsVBO();
+	GLuint getBoneWeightsVBO();
 
-	GLuint getSkeletonWeightIndices();
+	GLuint getBoneIndicesVBO();
 
 	int getVertCount();
 

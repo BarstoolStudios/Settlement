@@ -29,6 +29,14 @@ Matrix4f::Matrix4f(
 	m03(m03), m13(m13), m23(m23), m33(m33)
 	{}
 
+void Matrix4f::pushOn(std::vector<GLfloat>* floats) {
+	floats->push_back(m00); floats->push_back(m10); floats->push_back(m20); floats->push_back(m30);
+	floats->push_back(m01); floats->push_back(m11); floats->push_back(m21); floats->push_back(m31);
+	floats->push_back(m02); floats->push_back(m12); floats->push_back(m22); floats->push_back(m32);
+	floats->push_back(m03); floats->push_back(m13); floats->push_back(m23); floats->push_back(m33);
+
+}
+
 //==============================================================================
 // Returns Matrix as Array (Row-Major)
 //==============================================================================

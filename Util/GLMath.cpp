@@ -64,6 +64,10 @@ Matrix4f GLMath::getTranslation(float x, float y, float z) {
 	return result;
 }
 
+Matrix4f GLMath::getTranslation(Vector3f vec) {
+	return getTranslation(vec.x, vec.y, vec.z);
+}
+
 //==============================================================================
 // Constructs a Scaling Matrix
 //==============================================================================
@@ -76,6 +80,10 @@ Matrix4f GLMath::getScale(float x, float y, float z) {
 	result.m22 = z;
 
 	return result;
+}
+
+Matrix4f GLMath::getScale(Vector3f vec) {
+	return getScale(vec.x, vec.y, vec.z);
 }
 
 //==============================================================================
@@ -125,6 +133,10 @@ Matrix4f GLMath::getRotation(float x, float y, float z) {
 		result = result * m;
 	}
 	return result;
+}
+
+Matrix4f GLMath::getRotation(Vector3f vec) {
+	return getRotation(vec.x, vec.y, vec.z);
 }
 
 //==============================================================================

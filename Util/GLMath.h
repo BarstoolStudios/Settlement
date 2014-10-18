@@ -107,6 +107,8 @@ class Matrix4f {
 					GLfloat, GLfloat, GLfloat, GLfloat
 				);
 
+		void pushOn(std::vector<GLfloat>* floats);
+
 		void asArray(GLfloat* arr);
 
 		void transpose();
@@ -181,9 +183,15 @@ namespace GLMath {
 
 	Matrix4f getTranslation(float x, float y, float z);
 
+	Matrix4f getTranslation(Vector3f vec);
+
 	Matrix4f getScale(float x, float y, float z);
 
+	Matrix4f getScale(Vector3f vec);
+
 	Matrix4f getRotation(float x, float y, float z);
+
+	Matrix4f getRotation(Vector3f vec);
 
 	Matrix3f fourToThree(const Matrix4f& m4);
 }

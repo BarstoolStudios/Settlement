@@ -7,6 +7,7 @@
 #include "Util/ShaderUtil.h"
 #include "Models/Tree.h"
 #include "Util/Text.h"
+#include "Models/Villager.h"
 
 //==============================================================================
 // Constructor
@@ -22,17 +23,22 @@ App::App() {
 	timer = new GameTimer();
 	camera = new Camera(Vector2f(128,128));
 	terrain = new Terrain();
-	trees = new std::list<Tree>();
-
-	//------------------------------------------------------------------------------
-	// Grabs Mouse
-	//------------------------------------------------------------------------------
-	mouse->setGrabbed(true);
 
 	//------------------------------------------------------------------------------
 	// Load Static Resources
 	//------------------------------------------------------------------------------
 	loadResources();
+
+	//------------------------------------------------------------------------------
+	// Create Members
+	//------------------------------------------------------------------------------
+	trees = new std::list<Tree>();
+	villager = new Villager(Vector3f(0, terrain->getHeightAt(0, 0), 0));
+
+	//------------------------------------------------------------------------------
+	// Grabs Mouse
+	//------------------------------------------------------------------------------
+	mouse->setGrabbed(true);
 
 	//------------------------------------------------------------------------------
 	// Adds a tree (Testing Code)
@@ -51,14 +57,17 @@ App::~App() {
 	delete camera;
 	delete terrain;
 	delete trees;
+	delete villager;
 }
 //==============================================================================
 // Load Static Resources
 //==============================================================================
 void App::loadResources() {
+	
+	Villager::loadResources();
 
 	Tree::loadResources();
-	
+
 	Text::loadResources();
 }
 
@@ -80,17 +89,27 @@ void App::input() {
 	if(keyboard->isKeyDown(Keyboard::KEY_L))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	if(keyboard->isKeyDown(Keyboard::KEY_H))
-		std::cout << camera->getPosition();
+	if (keyboard->wasKeyPressed(Keyboard::KEY_M))
+		mouse->setGrabbed(!mouse->isGrabbed());
 
-	if (keyboard->isKeyDown(Keyboard::KEY_M))
-		mouse->setGrabbed(false);
-	if (keyboard->isKeyDown(Keyboard::KEY_N))
-		mouse->setGrabbed(true);
-
-	if(keyboard->wasKeyPressed(Keyboard::KEY_F3)) {
+	if(keyboard->wasKeyPressed(Keyboard::KEY_F3))
 		displayDebug = !displayDebug;
-	}
+	
+
+	if(keyboard->wasKeyPressed(Keyboard::KEY_9))
+		std::cout << villager->getSkeleton()->getBone("Radius_R")->getMatrix() << std::endl;
+
+	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_8))
+		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(2, 0, 0));
+
+	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_5))
+		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(-2, 0, 0));
+
+	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_7))
+		villager->getSkeleton()->rotate("Humerous_R", Vector3f(2, 0, 0));
+
+	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_4))
+		villager->getSkeleton()->rotate("Humerous_R", Vector3f(-2, 0, 0));
 }
 
 //==============================================================================
@@ -137,10 +156,10 @@ void App::render() {
 	//------------------------------------------------------------------------------
 	// Draw Trees
 	//------------------------------------------------------------------------------
-	for(auto& tree : *trees) {
+	for(auto& tree : *trees)
 		tree.draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
-	}
 
+	villager->draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
 
 	//------------------------------------------------------------------------------
 	// Display Debugging Info

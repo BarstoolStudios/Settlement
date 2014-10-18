@@ -7,6 +7,7 @@
 #include <windows.h>
 #include "Util/GLMath.h"
 #include "Models/Face.h"
+#include "Models/Skeleton.h"
 #include "Util/Utility.h"
 #include "Util/lodepng.h"
 
@@ -166,6 +167,8 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 
 	std::ifstream modelFile(std::string("Resources/Models/") + modelName + ".bar");
 
+	Skeleton* skeleton = NULL;
+
 	if(modelFile.is_open()) {
 
 		while(std::getline(modelFile, line)) {
@@ -176,6 +179,29 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 				Utility::stringSplit(line, ' ', split);
 
 				vertices.push_back(Vector3f(std::stof(split[1]), std::stof(split[2]), std::stof(split[3])));
+
+				// If model has Skeleton then read in weights
+				if(skeleton != NULL) {
+					Vector3f w(0, 0, 0);
+					Vector3f ids(-1, -1, -1);
+
+					// Max of three bones. May be less
+					if(split.size() > 4) {
+						ids.x = skeleton->getBoneID(split[4]);
+						w.x = std::stof(split[5]);
+						if(split.size() > 6) {
+							ids.y = skeleton->getBoneID(split[6]);
+							w.y = std::stof(split[7]);
+							if(split.size() > 8) {
+								ids.z = skeleton->getBoneID(split[8]);
+								w.z = std::stof(split[9]);
+							}
+						}
+					}
+
+					weights.push_back(w);
+					weightIndices.push_back(ids);
+				}
 			}
 
 			// Process vertex normal
@@ -207,11 +233,25 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 				Utility::stringSplit(split[2], '/', v2);
 				Utility::stringSplit(split[3], '/', v3);
 
-				int vertIndices[] {std::stof(v1[0]), std::stof(v2[0]), std::stof(v3[0])};
-				int texIndices[] {std::stof(v1[1]), std::stof(v2[1]), std::stof(v3[1])};
-				int normIndices[] {std::stof(v1[2]), std::stof(v2[2]), std::stof(v3[2])};
+				if(v1[1] == "") {
+					int vertIndices[] {std::stof(v1[0]), std::stof(v2[0]), std::stof(v3[0])};
+					int normIndices[] {std::stof(v1[2]), std::stof(v2[2]), std::stof(v3[2])};
 
-				faces.push_back(Face(vertIndices, texIndices, normIndices));
+					faces.push_back(Face(vertIndices, normIndices));
+
+				} else {
+					int vertIndices[] {std::stof(v1[0]), std::stof(v2[0]), std::stof(v3[0])};
+					int texIndices[] {std::stof(v1[1]), std::stof(v2[1]), std::stof(v3[1])};
+					int normIndices[] {std::stof(v1[2]), std::stof(v2[2]), std::stof(v3[2])};
+
+					faces.push_back(Face(vertIndices, texIndices, normIndices));
+				}
+			}
+
+			else if(Utility::stringStartsWith(line, "a ")) {
+				std::vector<std::string> split;
+				Utility::stringSplit(line, ' ', split);
+				skeleton = new Skeleton(split[1], modelFile);
 			}
 		}
 
@@ -220,46 +260,84 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 		std::cout << "Unable to read " << modelName << ".bar" << '\n';
 	}
 
+
 	std::vector<GLfloat> vertBuff;
 	std::vector<GLfloat> normBuff;
 	std::vector<GLfloat> texCoordBuff;
+	std::vector<GLfloat> weightBuff;
+	std::vector<GLfloat> weightIndexBuff;
 
 	for(auto& face : faces) {
-		// Vertex 1
+
 		vertices[face.vertexIndices[0] - 1].pushOn(&vertBuff);
-		normals[face.normalIndices[0] - 1].pushOn(&normBuff);
-		texCoords[face.texCoordIndices[0] - 1].pushOn(&texCoordBuff);
-
-		// Vertex 2
 		vertices[face.vertexIndices[1] - 1].pushOn(&vertBuff);
-		normals[face.normalIndices[1] - 1].pushOn(&normBuff);
-		texCoords[face.texCoordIndices[1] - 1].pushOn(&texCoordBuff);
-
-		// Vertex 3
 		vertices[face.vertexIndices[2] - 1].pushOn(&vertBuff);
-		normals[face.normalIndices[2] - 1].pushOn(&normBuff);
-		texCoords[face.texCoordIndices[2] - 1].pushOn(&texCoordBuff);
+
+		if(skeleton != NULL) {
+			weights[face.vertexIndices[0] - 1].pushOn(&weightBuff);
+			weights[face.vertexIndices[1] - 1].pushOn(&weightBuff);
+			weights[face.vertexIndices[2] - 1].pushOn(&weightBuff);
+
+			weightIndices[face.vertexIndices[0] - 1].pushOn(&weightIndexBuff);
+			weightIndices[face.vertexIndices[1] - 1].pushOn(&weightIndexBuff);
+			weightIndices[face.vertexIndices[2] - 1].pushOn(&weightIndexBuff);
+		}
+
+		if(face.hasNormals()) {
+			normals[face.normalIndices[0] - 1].pushOn(&normBuff);
+			normals[face.normalIndices[1] - 1].pushOn(&normBuff);
+			normals[face.normalIndices[2] - 1].pushOn(&normBuff);
+		}
+
+		if(face.hasTexCoords()) {
+			texCoords[face.texCoordIndices[0] - 1].pushOn(&texCoordBuff);
+			texCoords[face.texCoordIndices[1] - 1].pushOn(&texCoordBuff);
+			texCoords[face.texCoordIndices[2] - 1].pushOn(&texCoordBuff);
+		}
 	}
 
-	GLuint buffs[3];
-	glGenBuffers(3, buffs);
+	GLuint verticesVBO, normalsVBO, texCoordVBO, weightVBO, weightIndexVBO;
 
-	int verticesVBO = buffs[0];
-	int normalsVBO = buffs[1];
-	int texCoordVBO = buffs[2];
+	GLuint buffs[2];
+		
+	glGenBuffers(1, buffs);
+	verticesVBO = buffs[0];
 
 	glBindBuffer(GL_ARRAY_BUFFER, verticesVBO);
 	glBufferData(GL_ARRAY_BUFFER, vertBuff.size() * sizeof(GLfloat), &(vertBuff[0]), GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, normalsVBO);
-	glBufferData(GL_ARRAY_BUFFER, normBuff.size() * sizeof(GLfloat), &(normBuff[0]), GL_STATIC_DRAW);
+	if(normals.size() > 0) {
+		glGenBuffers(1, buffs);
+		normalsVBO = buffs[0];
 
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
-	glBufferData(GL_ARRAY_BUFFER, texCoordBuff.size() * sizeof(GLfloat), &(texCoordBuff[0]), GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, normalsVBO);
+		glBufferData(GL_ARRAY_BUFFER, normBuff.size() * sizeof(GLfloat), &(normBuff[0]), GL_STATIC_DRAW);
+	}
+
+	if(texCoords.size() > 0) {
+		glGenBuffers(1, buffs);
+		texCoordVBO = buffs[0];
+
+		glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
+		glBufferData(GL_ARRAY_BUFFER, texCoordBuff.size() * sizeof(GLfloat), &(texCoordBuff[0]), GL_STATIC_DRAW);
+	}
+
+	if(skeleton != NULL) {
+		glGenBuffers(2, buffs);
+		weightVBO = buffs[0];
+		weightIndexVBO = buffs[1];
+
+		glBindBuffer(GL_ARRAY_BUFFER, weightVBO);
+		glBufferData(GL_ARRAY_BUFFER, weightBuff.size() * sizeof(GLfloat), &(weightBuff[0]), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, weightIndexVBO);
+		glBufferData(GL_ARRAY_BUFFER, weightIndexBuff.size() * sizeof(GLfloat), &(weightIndexBuff[0]), GL_STATIC_DRAW);
+	}
 
 	int vertCount = faces.size() * 3;
 
-	return ModelData(verticesVBO, normalsVBO, texCoordVBO, 0, 0, vertCount, NULL);
+	return ModelData(verticesVBO, normalsVBO, texCoordVBO, weightVBO, weightIndexVBO, vertCount, skeleton);
+
 }
 
 //==============================================================================

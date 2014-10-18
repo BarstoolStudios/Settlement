@@ -9,6 +9,7 @@
 #include "Util/GameTimer.h"
 #include "Terrain/Terrain.h"
 #include "Models/Tree.h"
+#include "Models/Villager.h"
 
 class App {
 	Display* display;
@@ -18,6 +19,7 @@ class App {
 	Camera* camera;
 	Terrain* terrain;
 	std::list<Tree>* trees;
+	Villager* villager;
 
 	bool displayDebug;
 
