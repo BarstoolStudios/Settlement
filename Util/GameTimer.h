@@ -10,7 +10,7 @@ class GameTimer {
 public:
 	GameTimer();
 
-	double getTime();
+	static double getTime();
 	double getDelta();
 
 	int getFPS();
