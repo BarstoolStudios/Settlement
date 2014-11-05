@@ -93,10 +93,10 @@ std::ostream& operator<<(std::ostream &strm, const Vector2f& vec);
 
 class Matrix4f {
 	public:
-		GLfloat	m00, m10, m20, m30,
-				m01, m11, m21, m31,
-				m02, m12, m22, m32,
-				m03, m13, m23, m33;
+		GLfloat	m11, m12, m13, m14,
+				m21, m22, m23, m24,
+				m31, m32, m33, m34,
+				m41, m42, m43, m44;
 		
 		Matrix4f();
 		Matrix4f(Matrix4f& mat);
@@ -123,9 +123,9 @@ std::ostream& operator<<(std::ostream &strm, const Matrix4f& mat);
 
 class Matrix3f {
 	public:
-		GLfloat	m00, m10, m20,
-				m01, m11, m21,
-				m02, m12, m22;
+		GLfloat	m11, m12, m13,
+				m21, m22, m23,
+				m31, m32, m33;
 
 		Matrix3f();
 		Matrix3f(Matrix3f& mat);
@@ -151,8 +151,8 @@ std::ostream& operator<<(std::ostream &strm, const Matrix3f& vec);
 
 class Matrix2f {
 public:
-	GLfloat	m00, m10,
-		m01, m11;
+	GLfloat	m11, m12,
+			m21, m22;
 
 	Matrix2f();
 	Matrix2f(Matrix2f& mat);

@@ -1,39 +1,50 @@
+/******************************************************************************\
+* File: Matrix4f.cpp
+*
+* Author: Josh Taylor
+*
+* Header: GLMath.h
+*
+* Description: A 4x4 Matrix Class with float members. Used for graphics
+*              calculations. Follows matrix convention m<row><column>
+\******************************************************************************/
+
 #include "Util/GLMath.h"
 
 //==============================================================================
 // Constructors
 //==============================================================================
 Matrix4f::Matrix4f() {
-	m00 = 1; m10 = 0; m20 = 0; m30 = 0;
-	m01 = 0; m11 = 1; m21 = 0; m31 = 0;
-	m02 = 0; m12 = 0; m22 = 1; m32 = 0;
-	m03 = 0; m13 = 0; m23 = 0; m33 = 1;
+	m11 = 1; m12 = 0; m13 = 0; m14 = 0;
+	m21 = 0; m22 = 1; m23 = 0; m24 = 0;
+	m31 = 0; m32 = 0; m33 = 1; m34 = 0;
+	m41 = 0; m42 = 0; m43 = 0; m44 = 1;
 }
 
 Matrix4f::Matrix4f(Matrix4f& mat) {
-	m00 = mat.m00; m10 = mat.m10; m20 = mat.m20; m30 = mat.m30;
-	m01 = mat.m01; m11 = mat.m11; m21 = mat.m21; m31 = mat.m31;
-	m02 = mat.m02; m12 = mat.m12; m22 = mat.m22; m32 = mat.m32;
-	m03 = mat.m03; m13 = mat.m13; m23 = mat.m23; m33 = mat.m33;
+	m11 = mat.m11; m12 = mat.m12; m13 = mat.m13; m14 = mat.m14;
+	m21 = mat.m21; m22 = mat.m22; m23 = mat.m23; m24 = mat.m24;
+	m31 = mat.m31; m32 = mat.m32; m33 = mat.m33; m34 = mat.m34;
+	m41 = mat.m41; m42 = mat.m42; m43 = mat.m43; m44 = mat.m44;
 }
 
 Matrix4f::Matrix4f(
-	GLfloat m00, GLfloat m10, GLfloat m20, GLfloat m30,
-	GLfloat m01, GLfloat m11, GLfloat m21, GLfloat m31,
-	GLfloat m02, GLfloat m12, GLfloat m22, GLfloat m32,
-	GLfloat m03, GLfloat m13, GLfloat m23, GLfloat m33)
+	GLfloat m11, GLfloat m12, GLfloat m13, GLfloat m14,
+	GLfloat m21, GLfloat m22, GLfloat m23, GLfloat m24,
+	GLfloat m31, GLfloat m32, GLfloat m33, GLfloat m34,
+	GLfloat m41, GLfloat m42, GLfloat m43, GLfloat m44)
 	:
-	m00(m00), m10(m10), m20(m20), m30(m30),
-	m01(m01), m11(m11), m21(m21), m31(m31),
-	m02(m02), m12(m12), m22(m22), m32(m32),
-	m03(m03), m13(m13), m23(m23), m33(m33)
+	m11(m11), m12(m12), m13(m13), m14(m14),
+	m21(m21), m22(m22), m23(m23), m24(m24),
+	m31(m31), m32(m32), m33(m33), m34(m34),
+	m41(m41), m42(m42), m43(m43), m44(m44)
 	{}
 
 void Matrix4f::pushOn(std::vector<GLfloat>* floats) {
-	floats->push_back(m00); floats->push_back(m10); floats->push_back(m20); floats->push_back(m30);
-	floats->push_back(m01); floats->push_back(m11); floats->push_back(m21); floats->push_back(m31);
-	floats->push_back(m02); floats->push_back(m12); floats->push_back(m22); floats->push_back(m32);
-	floats->push_back(m03); floats->push_back(m13); floats->push_back(m23); floats->push_back(m33);
+	floats->push_back(m11); floats->push_back(m12); floats->push_back(m13); floats->push_back(m14);
+	floats->push_back(m21); floats->push_back(m22); floats->push_back(m23); floats->push_back(m24);
+	floats->push_back(m31); floats->push_back(m32); floats->push_back(m33); floats->push_back(m34);
+	floats->push_back(m41); floats->push_back(m42); floats->push_back(m43); floats->push_back(m44);
 
 }
 
@@ -41,10 +52,10 @@ void Matrix4f::pushOn(std::vector<GLfloat>* floats) {
 // Returns Matrix as Array (Row-Major)
 //==============================================================================
 void Matrix4f::asArray(GLfloat* arr) {
-	arr[0] = m00; arr[1] = m10; arr[2] = m20; arr[3] = m30;
-	arr[4] = m01; arr[5] = m11; arr[6] = m21; arr[7] = m31;
-	arr[8] = m02; arr[9] = m12; arr[10] = m22; arr[11] = m32;
-	arr[12] = m03; arr[13] = m13; arr[14] = m23; arr[15] = m33;
+	arr[0] =  m11; arr[1] =  m12; arr[2] =  m13; arr[3] =  m14;
+	arr[4] =  m21; arr[5] =  m22; arr[6] =  m23; arr[7] =  m24;
+	arr[8] =  m31; arr[9] =  m32; arr[10] = m33; arr[11] = m34;
+	arr[12] = m41; arr[13] = m42; arr[14] = m43; arr[15] = m44;
 }
 
 //==============================================================================
@@ -53,21 +64,21 @@ void Matrix4f::asArray(GLfloat* arr) {
 void Matrix4f::transpose() {
 	Matrix4f temp(*this);
 
-	m01 = temp.m10;
-	m02 = temp.m20;
-	m03 = temp.m30;
-
-	m10 = temp.m01;
-	m12 = temp.m21;
-	m13 = temp.m31;
-
-	m20 = temp.m02;
 	m21 = temp.m12;
-	m23 = temp.m32;
-
-	m30 = temp.m03;
 	m31 = temp.m13;
+	m41 = temp.m14;
+
+	m12 = temp.m21;
 	m32 = temp.m23;
+	m42 = temp.m24;
+
+	m13 = temp.m31;
+	m23 = temp.m32;
+	m43 = temp.m34;
+
+	m14 = temp.m41;
+	m24 = temp.m42;
+	m34 = temp.m43;
 }
 
 //==============================================================================
@@ -78,56 +89,56 @@ void Matrix4f::inverse() {
 	GLfloat invDet = 1.0f / determinant();
 
 	// Find Cofactors
-	GLfloat c00 = Matrix3f(m11, m21, m31, m12, m22, m32, m13, m23, m33).determinant();
-	GLfloat c01 = Matrix3f(m10, m20, m30, m12, m22, m32, m13, m23, m33).determinant();
-	GLfloat c02 = Matrix3f(m10, m20, m30, m11, m21, m31, m13, m23, m33).determinant();
-	GLfloat c03 = Matrix3f(m10, m20, m30, m11, m21, m31, m12, m22, m32).determinant();
+	GLfloat c11 = Matrix3f(m22, m23, m24, m32, m33, m34, m42, m43, m44).determinant();
+	GLfloat c21 = -Matrix3f(m12, m13, m14, m32, m33, m34, m42, m43, m44).determinant();
+	GLfloat c31 = Matrix3f(m12, m13, m14, m22, m23, m24, m42, m43, m44).determinant();
+	GLfloat c41 = -Matrix3f(m12, m13, m14, m22, m23, m24, m32, m33, m34).determinant();
 
-	GLfloat c10 = Matrix3f(m01, m21, m31, m02, m22, m32, m03, m23, m33).determinant();
-	GLfloat c11 = Matrix3f(m00, m20, m30, m02, m22, m32, m03, m23, m33).determinant();
-	GLfloat c12 = Matrix3f(m00, m20, m30, m01, m21, m31, m03, m23, m33).determinant();
-	GLfloat c13 = Matrix3f(m00, m20, m30, m01, m21, m31, m02, m22, m32).determinant();
+	GLfloat c12 = -Matrix3f(m21, m23, m24, m31, m33, m34, m41, m43, m44).determinant();
+	GLfloat c22 = Matrix3f(m11, m13, m14, m31, m33, m34, m41, m43, m44).determinant();
+	GLfloat c32 = -Matrix3f(m11, m13, m41, m21, m23, m24, m41, m43, m44).determinant();
+	GLfloat c42 = Matrix3f(m11, m13, m14, m21, m23, m24, m31, m33, m34).determinant();
 
-	GLfloat c20 = Matrix3f(m01, m11, m31, m02, m12, m32, m03, m13, m33).determinant();
-	GLfloat c21 = Matrix3f(m00, m10, m30, m02, m12, m32, m03, m13, m33).determinant();
-	GLfloat c22 = Matrix3f(m00, m10, m30, m01, m11, m31, m03, m13, m33).determinant();
-	GLfloat c23 = Matrix3f(m00, m10, m30, m01, m11, m31, m02, m12, m32).determinant();
+	GLfloat c13 = Matrix3f(m21, m22, m24, m31, m32, m34, m41, m42, m44).determinant();
+	GLfloat c23 = -Matrix3f(m11, m12, m14, m31, m32, m34, m41, m42, m44).determinant();
+	GLfloat c33 = Matrix3f(m11, m12, m14, m21, m22, m24, m41, m42, m44).determinant();
+	GLfloat c43 = -Matrix3f(m11, m12, m14, m21, m22, m24, m31, m32, m34).determinant();
 
-	GLfloat c30 = Matrix3f(m01, m11, m21, m02, m12, m22, m03, m13, m23).determinant();
-	GLfloat c31 = Matrix3f(m00, m10, m20, m02, m12, m22, m03, m13, m23).determinant();
-	GLfloat c32 = Matrix3f(m00, m10, m20, m01, m11, m21, m03, m13, m23).determinant();
-	GLfloat c33 = Matrix3f(m00, m10, m20, m01, m11, m21, m02, m12, m22).determinant();
+	GLfloat c14 = -Matrix3f(m21, m22, m23, m31, m32, m33, m41, m42, m43).determinant();
+	GLfloat c24 = Matrix3f(m11, m12, m13, m31, m32, m33, m41, m42, m43).determinant();
+	GLfloat c34 = -Matrix3f(m11, m12, m13, m21, m22, m23, m41, m42, m43).determinant();
+	GLfloat c44 = Matrix3f(m11, m12, m13, m21, m22, m23, m31, m32, m33).determinant();
 
-	// Multiply by Inverse Determinant
-	m00 = c00 * invDet;
-	m01 = c01 * invDet;
-	m02 = c02 * invDet;
-	m03 = c03 * invDet;
-
-	m10 = c10 * invDet;
+	// Take Transpose of Cofactor Matrix and Multiply by Inverse Determinant
 	m11 = c11 * invDet;
-	m12 = c12 * invDet;
-	m13 = c13 * invDet;
+	m21 = c12 * invDet;
+	m31 = c13 * invDet;
+	m41 = c14 * invDet;
 
-	m20 = c20 * invDet;
-	m21 = c21 * invDet;
+	m12 = c21 * invDet;
 	m22 = c22 * invDet;
-	m23 = c23 * invDet;
+	m32 = c23 * invDet;
+	m42 = c24 * invDet;
 
-	m30 = c30 * invDet;
-	m31 = c31 * invDet;
-	m32 = c32 * invDet;
+	m13 = c31 * invDet;
+	m23 = c32 * invDet;
 	m33 = c33 * invDet;
+	m43 = c34 * invDet;
+
+	m14 = c41 * invDet;
+	m24 = c42 * invDet;
+	m34 = c43 * invDet;
+	m44 = c44 * invDet;
 }
 
 //==============================================================================
 // Returns Determinate of Current Matrix
 //==============================================================================
 GLfloat Matrix4f::determinant() {
-	return	 m00 * Matrix3f(m11, m21, m31, m12, m22, m32, m13, m23, m33).determinant()
-			-m01 * Matrix3f(m10, m20, m30, m12, m22, m32, m13, m23, m33).determinant()
-			+m02 * Matrix3f(m10, m20, m30, m11, m21, m31, m13, m23, m33).determinant()
-			-m03 * Matrix3f(m10, m20, m30, m12, m22, m32, m13, m23, m33).determinant();
+	return	 m11 * Matrix3f(m22, m23, m24, m32, m33, m34, m42, m43, m44).determinant()
+		   - m21 * Matrix3f(m12, m13, m14, m32, m33, m34, m42, m43, m44).determinant()
+		   + m31 * Matrix3f(m12, m13, m14, m22, m23, m24, m42, m43, m44).determinant()
+		   - m41 * Matrix3f(m12, m13, m14, m22, m23, m24, m32, m33, m34).determinant();
 }
 
 //==============================================================================
@@ -136,35 +147,35 @@ GLfloat Matrix4f::determinant() {
 Matrix4f Matrix4f::operator * (const Matrix4f& m) {
 	Matrix4f temp;
 
-	Vector4f c0(m.m00, m.m01, m.m02, m.m03);
-	Vector4f c1(m.m10, m.m11, m.m12, m.m13);
-	Vector4f c2(m.m20, m.m21, m.m22, m.m23);
-	Vector4f c3(m.m30, m.m31, m.m32, m.m33);
+	Vector4f c0(m.m11, m.m21, m.m31, m.m41);
+	Vector4f c1(m.m12, m.m22, m.m32, m.m42);
+	Vector4f c2(m.m13, m.m23, m.m33, m.m43);
+	Vector4f c3(m.m14, m.m24, m.m34, m.m44);
 
-	Vector4f r0(m00, m10, m20, m30);
-	Vector4f r1(m01, m11, m21, m31);
-	Vector4f r2(m02, m12, m22, m32);
-	Vector4f r3(m03, m13, m23, m33);
+	Vector4f r0(m11, m12, m13, m14);
+	Vector4f r1(m21, m22, m23, m24);
+	Vector4f r2(m31, m32, m33, m34);
+	Vector4f r3(m41, m42, m43, m44);
 
-	temp.m00 = Vector4f::dot(c0, r0);
-	temp.m01 = Vector4f::dot(c0, r1);
-	temp.m02 = Vector4f::dot(c0, r2);
-	temp.m03 = Vector4f::dot(c0, r3);
+	temp.m11 = Vector4f::dot(c0, r0);
+	temp.m21 = Vector4f::dot(c0, r1);
+	temp.m31 = Vector4f::dot(c0, r2);
+	temp.m41 = Vector4f::dot(c0, r3);
 
-	temp.m10 = Vector4f::dot(c1, r0);
-	temp.m11 = Vector4f::dot(c1, r1);
-	temp.m12 = Vector4f::dot(c1, r2);
-	temp.m13 = Vector4f::dot(c1, r3);
+	temp.m12 = Vector4f::dot(c1, r0);
+	temp.m22 = Vector4f::dot(c1, r1);
+	temp.m32 = Vector4f::dot(c1, r2);
+	temp.m42 = Vector4f::dot(c1, r3);
 
-	temp.m20 = Vector4f::dot(c2, r0);
-	temp.m21 = Vector4f::dot(c2, r1);
-	temp.m22 = Vector4f::dot(c2, r2);
-	temp.m23 = Vector4f::dot(c2, r3);
+	temp.m13 = Vector4f::dot(c2, r0);
+	temp.m23 = Vector4f::dot(c2, r1);
+	temp.m33 = Vector4f::dot(c2, r2);
+	temp.m43 = Vector4f::dot(c2, r3);
 
-	temp.m30 = Vector4f::dot(c3, r0);
-	temp.m31 = Vector4f::dot(c3, r1);
-	temp.m32 = Vector4f::dot(c3, r2);
-	temp.m33 = Vector4f::dot(c3, r3);
+	temp.m14 = Vector4f::dot(c3, r0);
+	temp.m24 = Vector4f::dot(c3, r1);
+	temp.m34 = Vector4f::dot(c3, r2);
+	temp.m44 = Vector4f::dot(c3, r3);
 
 	return temp;
 }
@@ -175,10 +186,10 @@ Matrix4f Matrix4f::operator * (const Matrix4f& m) {
 Vector4f Matrix4f::operator * (const Vector4f& v) {
 	Vector4f temp;
 
-	Vector4f r0(m00, m10, m20, m30);
-	Vector4f r1(m01, m11, m21, m31);
-	Vector4f r2(m02, m12, m22, m32);
-	Vector4f r3(m03, m13, m23, m33);
+	Vector4f r0(m11, m12, m13, m14);
+	Vector4f r1(m21, m22, m23, m24);
+	Vector4f r2(m31, m32, m33, m34);
+	Vector4f r3(m41, m42, m43, m44);
 
 	temp.x = Vector4f::dot(v, r0);
 	temp.y = Vector4f::dot(v, r1);
@@ -192,8 +203,8 @@ Vector4f Matrix4f::operator * (const Vector4f& v) {
 // Overloads << for Streams
 //==============================================================================
 std::ostream& operator<<(std::ostream &strm, const Matrix4f& mat) {
-	return strm << mat.m00 << ' ' << mat.m10 << ' ' << mat.m20 << ' ' << mat.m30 << '\n'
-				<< mat.m01 << ' ' << mat.m11 << ' ' << mat.m21 << ' ' << mat.m31 << '\n'
-				<< mat.m02 << ' ' << mat.m12 << ' ' << mat.m22 << ' ' << mat.m32 << '\n'
-				<< mat.m03 << ' ' << mat.m13 << ' ' << mat.m23 << ' ' << mat.m33 << '\n';
+	return strm << mat.m11 << ' ' << mat.m12 << ' ' << mat.m13 << ' ' << mat.m14 << '\n'
+				<< mat.m21 << ' ' << mat.m22 << ' ' << mat.m23 << ' ' << mat.m24 << '\n'
+				<< mat.m31 << ' ' << mat.m32 << ' ' << mat.m33 << ' ' << mat.m34 << '\n'
+				<< mat.m41 << ' ' << mat.m42 << ' ' << mat.m43 << ' ' << mat.m44 << '\n';
 }
