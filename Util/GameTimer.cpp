@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: GameTimer.cpp
+*
+* Author: Josh Taylor
+*
+* Header: GameTimer.h
+*
+* Description: A basic timer using <chrono> for time sensitive events.
+\******************************************************************************/
+
 #include <chrono>
 #include <cmath>
 #include "Util/GameTimer.h"

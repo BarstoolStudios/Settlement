@@ -1,15 +1,25 @@
+/******************************************************************************\
+* File: ShaderUtil.cpp
+*
+* Author: Josh Taylor
+*
+* Header: ShaderUtil.h
+*
+* Description: Provides funtions to simplify interations with OpenGL shaders
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include "Util/ShaderUtil.h"
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <windows.h>
 #include "Util/GLMath.h"
 #include "Models/Face.h"
 #include "Models/Skeleton.h"
 #include "Util/Utility.h"
 #include "Util/lodepng.h"
+#include "Util/GameTimer.h"
 
 //==============================================================================
 // Loads and Compiles Shader with openGL and Returns Handle to Shader
@@ -53,7 +63,8 @@ std::string ShaderUtil::readShaderFromFile(std::string shaderName) {
 GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shaders, bool printStatus) {
 	std::string header = std::string(7, '-') + ' ' + modelName + " Shaders " + std::string(7, '-');
 
-	printToOutput(header + '\n');
+	if(printStatus)
+		Utility::printToOutput(header + '\n');
 
 	GLint shaderProgram = glCreateProgram();
 
@@ -61,47 +72,47 @@ GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shade
 		switch (shaders[i]) {
 		
 		case GL_VERTEX_SHADER: {
-			std::string vertCode = ShaderUtil::readShaderFromFile(modelName + ".vert");
-			GLint vertexShader = ShaderUtil::loadShader(GL_VERTEX_SHADER, vertCode);
+			std::string vertCode = readShaderFromFile(modelName + ".vert");
+			GLint vertexShader = loadShader(GL_VERTEX_SHADER, vertCode);
 			glAttachShader(shaderProgram, vertexShader);
 			if (printStatus)
-			ShaderUtil::printShaderStatus("Vertex", vertexShader);
+				printShaderStatus("Vertex", vertexShader);
 			break;
 		}
 
 		case GL_FRAGMENT_SHADER: {
-			std::string fragCode = ShaderUtil::readShaderFromFile(modelName + ".frag");
-			GLint fragmentShader = ShaderUtil::loadShader(GL_FRAGMENT_SHADER, fragCode);
+			std::string fragCode = readShaderFromFile(modelName + ".frag");
+			GLint fragmentShader = loadShader(GL_FRAGMENT_SHADER, fragCode);
 			glAttachShader(shaderProgram, fragmentShader);
 			if (printStatus)
-			ShaderUtil::printShaderStatus("Fragment", fragmentShader);
+				printShaderStatus("Fragment", fragmentShader);
 			break;
 		}
 
 		case GL_TESS_CONTROL_SHADER: {
-			std::string tescCode = ShaderUtil::readShaderFromFile(modelName + ".tesc");
-			GLint tessControlShader = ShaderUtil::loadShader(GL_TESS_CONTROL_SHADER, tescCode);
+			std::string tescCode = readShaderFromFile(modelName + ".tesc");
+			GLint tessControlShader = loadShader(GL_TESS_CONTROL_SHADER, tescCode);
 			glAttachShader(shaderProgram, tessControlShader);
 			if (printStatus)
-			ShaderUtil::printShaderStatus("Tessellation Control", tessControlShader);
+				printShaderStatus("Tessellation Control", tessControlShader);
 			break;
 		}
 
 		case GL_TESS_EVALUATION_SHADER: {
-			std::string teseCode = ShaderUtil::readShaderFromFile(modelName + ".tese");
-			GLint tessEvaluationShader = ShaderUtil::loadShader(GL_TESS_EVALUATION_SHADER, teseCode);
+			std::string teseCode = readShaderFromFile(modelName + ".tese");
+			GLint tessEvaluationShader = loadShader(GL_TESS_EVALUATION_SHADER, teseCode);
 			glAttachShader(shaderProgram, tessEvaluationShader);
 			if (printStatus)
-				ShaderUtil::printShaderStatus("Tessellation Evaluation", tessEvaluationShader);
+				printShaderStatus("Tessellation Evaluation", tessEvaluationShader);
 			break;
 		}
 
 		case GL_GEOMETRY_SHADER: {
-			std::string geomCode = ShaderUtil::readShaderFromFile(modelName + ".geom");
-			GLint geometryShader = ShaderUtil::loadShader(GL_GEOMETRY_SHADER, geomCode);
+			std::string geomCode = readShaderFromFile(modelName + ".geom");
+			GLint geometryShader = loadShader(GL_GEOMETRY_SHADER, geomCode);
 			glAttachShader(shaderProgram, geometryShader);
 			if (printStatus)
-				ShaderUtil::printShaderStatus("Geometry", geometryShader);
+				printShaderStatus("Geometry", geometryShader);
 			break;
 		}
 		}
@@ -111,7 +122,8 @@ GLint ShaderUtil::createProgram(std::string modelName, std::vector<GLenum> shade
 
 	printProgramStatus(shaderProgram);
 
-	printToOutput(std::string(header.size(), '-') + '\n');
+	if(printStatus)
+		Utility::printToOutput(std::string(header.size(), '-') + '\n');
 
 	return shaderProgram;
 }
@@ -129,17 +141,16 @@ GLuint ShaderUtil::loadPNG(std::string pngName) {
 	glGenTextures(1, &textureHandle);
 
 	if(textureHandle < 0) {
-		printToOutput(std::string("Failed to Generate Texture Handle: ") + pngName + '\n');
+		Utility::printToOutput(std::string("Failed to Generate Texture Handle: ") + pngName + '\n');
 	}
 
 	error = lodepng::decode(image, width, height, std::string("Resources/Textures/") + pngName);
 
 	if(error != 0) {
-		printToOutput(std::string("Failed to Decode: ") + pngName + '\n');
+		Utility::printToOutput(std::string("Failed to Decode: ") + pngName + '\n');
 		exit(-1);
 	}
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureHandle);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(image[0]));
@@ -341,55 +352,12 @@ ModelData ShaderUtil::loadModel(std::string modelName) {
 }
 
 //==============================================================================
-// Checks For an openGL Error and Exits if One Occured
-//==============================================================================
-void ShaderUtil::exitOnGLError(std::string errorMessage) {
-	GLenum errorValue = glGetError();
-
-	if (errorValue != GL_NO_ERROR) {
-		
-		switch (errorValue) {
-		
-		case GL_INVALID_ENUM:
-			printToOutput(std::string("OpenGL Error: Invalid Enum -- ") + errorMessage + '\n');
-			break;
-
-		case GL_INVALID_VALUE:
-			printToOutput(std::string("OpenGL Error: Invalid Value -- ") + errorMessage + '\n');
-			break;
-
-		case GL_INVALID_OPERATION:
-			printToOutput(std::string("OpenGL Error: Invalid Operation -- ") + errorMessage + '\n');
-			break;
-
-		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			printToOutput(std::string("OpenGL Error: Invalid Framebuffer Operation -- ") + errorMessage + '\n');
-			break;
-
-		case GL_OUT_OF_MEMORY:
-			printToOutput(std::string("OpenGL Error: Out of Memory -- ") + errorMessage + '\n');
-			break;
-
-		case GL_STACK_UNDERFLOW:
-			printToOutput(std::string("OpenGL Error: Stack Underflow -- ") + errorMessage + '\n');
-			break;
-
-		case GL_STACK_OVERFLOW:
-			printToOutput(std::string("OpenGL Error: Stack Overflow -- ") + errorMessage + '\n');
-			break;
-		}
-
-		exit(EXIT_FAILURE);
-	}
-}
-
-//==============================================================================
 // Prints the Compile Status of Shader
 //==============================================================================
 void ShaderUtil::printShaderStatus(std::string message, GLint handle) {
 	GLint status;
 	glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
-	printToOutput(message + " Compile: " + ((status == GL_TRUE) ? "true" : "false") + '\n');
+	Utility::printToOutput(message + " Compile: " + ((status == GL_TRUE) ? "true" : "false") + '\n');
 
 	GLint length;
 	glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length);
@@ -397,7 +365,7 @@ void ShaderUtil::printShaderStatus(std::string message, GLint handle) {
 		std::string temp(length, ' ');
 		const char* log = temp.c_str();
 		glGetShaderInfoLog(handle, length, NULL, (GLchar*)log);
-		printToOutput(log);
+		Utility::printToOutput(log);
 	}
 }
 
@@ -408,7 +376,7 @@ void ShaderUtil::printProgramStatus(GLint handle) {
 	GLint linked;
 	glGetProgramiv(handle, GL_LINK_STATUS, &linked);
 
-	printToOutput(std::string("Program Link: ") + (linked == GL_TRUE ? "true" : "false") + '\n');
+	Utility::printToOutput(std::string("Program Link: ") + (linked == GL_TRUE ? "true" : "false") + '\n');
 	
 	GLint length;
 	glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length);
@@ -416,13 +384,6 @@ void ShaderUtil::printProgramStatus(GLint handle) {
 		std::string temp(length, ' ');
 		const char* log = temp.c_str();
 		glGetProgramInfoLog(handle, length, NULL, (GLchar*)log);
-		printToOutput(log);
+		Utility::printToOutput(log);
 	}
-}
-
-//==============================================================================
-// Prints to Output Window in Visual Studio
-//==============================================================================
-void ShaderUtil::printToOutput(std::string str) {
-	OutputDebugString(str.c_str());
 }

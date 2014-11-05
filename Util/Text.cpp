@@ -1,7 +1,18 @@
+/******************************************************************************\
+* File: Text.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Text.h
+*
+* Description: Class that draws text to the screen
+\******************************************************************************/
+
 #include "Util/Text.h"
 #include <GL/glew.h>
 #include <vector>
 #include "Util/ShaderUtil.h"
+#include "Util/Utility.h"
 
 //==============================================================================
 // Initialize Static Variables
@@ -117,7 +128,7 @@ void Text::draw(std::string text, Vector2f startPos, float width, Matrix3f trans
 			curr.y += height;
 
 		} else {
-			ShaderUtil::printToOutput("Error -- Unsupported Character.");
+			Utility::printToOutput("Error -- Unsupported Character.");
 			exit(-1);
 		}
 	}

@@ -5,6 +5,7 @@
 #include "Models/ModelData.h"
 
 namespace ShaderUtil {
+
 	GLint loadShader(GLenum type, std::string shaderCode);
 
 	std::string readShaderFromFile(std::string shaderName);
@@ -15,11 +16,8 @@ namespace ShaderUtil {
 
 	ModelData loadModel(std::string modelName);
 
-	void exitOnGLError(std::string errorMessage);
-
 	void printShaderStatus(std::string message, GLint handle);
 
 	void printProgramStatus(GLint handle);
 
-	void printToOutput(std::string str);
 }

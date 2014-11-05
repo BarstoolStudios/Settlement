@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: Tree.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Tree.h
+*
+* Description: Tree Model
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include "Models/Tree.h"
 #include "Util/GLMath.h"

@@ -1,3 +1,14 @@
+/******************************************************************************\
+* File: Camera.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Camera.h
+*
+* Description: Camera used for perspective first person and orthographic
+*              top down view.
+\******************************************************************************/
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>

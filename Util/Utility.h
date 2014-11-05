@@ -11,6 +11,10 @@ namespace Utility {
 
 	void stringSplit(std::string& str, char delim, std::vector<std::string>& result);
 
+	void exitOnGLError(std::string errorMessage);
+
+	void printToOutput(std::string str);
+
 	template<class T> inline void remove(std::vector<T>& vec, const T& elem) {
 		vec.erase(find(vec.begin(), vec.end(), elem));
 	}

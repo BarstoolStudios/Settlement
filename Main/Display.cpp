@@ -1,9 +1,20 @@
+/******************************************************************************\
+* File: Display.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Display.h
+*
+* Description: Creates window and OpenGL context using SDL
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include <GL/SDL.h>
 #include <iostream>
 #include "Main/Display.h"
 #include "Main/Settings.h"
 #include "Util/ShaderUtil.h"
+#include "Util/Utility.h"
 
 //==============================================================================
 // Constructor Display
@@ -11,7 +22,7 @@
 Display::Display() {
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		ShaderUtil::printToOutput("Could not initialize SDL\n");
+		Utility::printToOutput("Could not initialize SDL\n");
 		exit(-1);
 	}
 
@@ -31,12 +42,12 @@ Display::Display() {
 	);
 
 	if (window == NULL) {
-		ShaderUtil::printToOutput("Could not create window\n");
+		Utility::printToOutput("Could not create window\n");
 		exit(-1);
 	}
 
 	if ((GLcontext = SDL_GL_CreateContext(window)) == NULL) {
-		ShaderUtil::printToOutput("Could not create OpenGL context\n");
+		Utility::printToOutput("Could not create OpenGL context\n");
 		exit(-1);
 	}
 
@@ -44,7 +55,7 @@ Display::Display() {
 
 	glewExperimental = GL_TRUE;
 	if(glewInit() != GLEW_OK) {
-		ShaderUtil::printToOutput("glew failed to initialize.");
+		Utility::printToOutput("glew failed to initialize.");
 		exit(EXIT_FAILURE);
 	}
 	glGetError(); // glewInit generates GL_INVALID_ENUM  WTF

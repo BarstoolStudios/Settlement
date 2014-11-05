@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: App.cpp
+*
+* Author: Josh Taylor
+*
+* Header: App.h
+*
+* Description: Conatins major functions for game loop and game loop
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include <iostream>
 #include <sstream>
@@ -5,6 +15,7 @@
 #include "Main/App.h"
 #include "Main/Settings.h"
 #include "Util/ShaderUtil.h"
+#include "Util/Utility.h"
 #include "Models/Tree.h"
 #include "Util/Text.h"
 #include "Models/Villager.h"
@@ -22,7 +33,11 @@ App::App() {
 	mouse = new Mouse();
 	timer = new GameTimer();
 	camera = new Camera(Vector2f(128,128));
+
+	double t = GameTimer::getTime();
 	terrain = new Terrain();
+	t = GameTimer::getTime() - t;
+	std::cout << "Terrain: " << t << " ms" << std::endl;
 
 	//------------------------------------------------------------------------------
 	// Load Static Resources
@@ -64,11 +79,22 @@ App::~App() {
 //==============================================================================
 void App::loadResources() {
 	
+	double t = GameTimer::getTime();
 	Villager::loadResources();
+	t = GameTimer::getTime() - t;
+	std::cout << "Villager: " << t << " ms" << std::endl;
 
+
+	t = GameTimer::getTime();
 	Tree::loadResources();
+	t = GameTimer::getTime() - t;
+	std::cout << "Tree: " << t << " ms" << std::endl;
 
+
+	t = GameTimer::getTime();
 	Text::loadResources();
+	t = GameTimer::getTime() - t;
+	std::cout << "Text: " << t << " ms" << std::endl;
 }
 
 //==============================================================================
@@ -94,22 +120,19 @@ void App::input() {
 
 	if(keyboard->wasKeyPressed(Keyboard::KEY_F3))
 		displayDebug = !displayDebug;
-	
-
-	if(keyboard->wasKeyPressed(Keyboard::KEY_9))
-		std::cout << villager->getSkeleton()->getBone("Radius_R")->getMatrix() << std::endl;
+		
 
 	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_8))
-		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(2, 0, 0));
+		villager->getSkeleton()->rotate("Radius_R", Vector3f(2, 0, 0));
 
 	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_5))
-		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(-2, 0, 0));
+		villager->getSkeleton()->rotate("Radius_R", Vector3f(-2, 0, 0));
 
 	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_7))
-		villager->getSkeleton()->rotate("Humerous_R", Vector3f(2, 0, 0));
+		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(2, 0, 0));
 
 	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_4))
-		villager->getSkeleton()->rotate("Humerous_R", Vector3f(-2, 0, 0));
+		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(-2, 0, 0));
 }
 
 //==============================================================================
@@ -181,17 +204,17 @@ void App::render() {
 //==============================================================================
 void App::gameLoop() {
 
-	ShaderUtil::exitOnGLError("App Initialize");
+	Utility::exitOnGLError("App Initialize");
 
 	while (!display->isQuitRequested()) {
 		input();
-		ShaderUtil::exitOnGLError("Input");
+		Utility::exitOnGLError("Input");
 		update();
-		ShaderUtil::exitOnGLError("Update");
+		Utility::exitOnGLError("Update");
 		render();
-		ShaderUtil::exitOnGLError("Render");
+		Utility::exitOnGLError("Render");
 		display->update();
-		ShaderUtil::exitOnGLError("Display Update");
+		Utility::exitOnGLError("Display Update");
 	}
 
 	display->destroy();

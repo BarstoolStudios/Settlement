@@ -1,3 +1,14 @@
+/******************************************************************************\
+* File: MoveType.h
+*
+* Author: Josh Taylor
+*
+* Description: 
+*
+* Dev Note: Should probably move to a types.h file for possible additions of
+*           other types.
+\******************************************************************************/
+
 #ifndef MOVETYPE_H
 #define MOVETYPE_H
 

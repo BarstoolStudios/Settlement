@@ -1,9 +1,15 @@
+/******************************************************************************\
+* File: Face.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Face.h
+*
+* Description: Used when loading models to store face data
+\******************************************************************************/
+
 #include "Models/Face.h"
 #include <iostream>
-
-//==============================================================================
-// Used When Loading Models to Store Face Data
-//==============================================================================
 
 Face::Face(int vertexIndices[3]) {
 	this->vertexIndices[0] = vertexIndices[0];

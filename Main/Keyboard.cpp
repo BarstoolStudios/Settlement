@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: Keyboard.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Keyboard.h
+*
+* Description: Provides wrapper and added functionality for SDL keyboard
+\******************************************************************************/
+
 #include <GL/SDL.h>
 #include <iostream>
 #include "Main/Keyboard.h"

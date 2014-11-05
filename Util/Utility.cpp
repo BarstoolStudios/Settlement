@@ -1,5 +1,17 @@
+/******************************************************************************\
+* File: Utility.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Utility.h
+*
+* Description: Provides functions that help but don't really belong anywhere
+\******************************************************************************/
+
+#include <GL/glew.h>
 #include <vector>
 #include <string>
+#include <windows.h>
 #include "Util/Utility.h"
 
 //==============================================================================
@@ -40,4 +52,55 @@ void Utility::stringSplit(std::string& str, char delim, std::vector<std::string>
 
 	result.push_back(str.substr(prevLoc));
 
+}
+
+//==============================================================================
+// Checks For an openGL Error and Exits if One Occured
+//==============================================================================
+void Utility::exitOnGLError(std::string errorMessage) {
+	GLenum errorValue = glGetError();
+
+	if(errorValue != GL_NO_ERROR) {
+
+		switch(errorValue) {
+
+		case GL_INVALID_ENUM:
+			printToOutput(std::string("OpenGL Error: Invalid Enum -- ") + errorMessage + '\n');
+			break;
+
+		case GL_INVALID_VALUE:
+			printToOutput(std::string("OpenGL Error: Invalid Value -- ") + errorMessage + '\n');
+			break;
+
+		case GL_INVALID_OPERATION:
+			printToOutput(std::string("OpenGL Error: Invalid Operation -- ") + errorMessage + '\n');
+			break;
+
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			printToOutput(std::string("OpenGL Error: Invalid Framebuffer Operation -- ") + errorMessage + '\n');
+			break;
+
+		case GL_OUT_OF_MEMORY:
+			printToOutput(std::string("OpenGL Error: Out of Memory -- ") + errorMessage + '\n');
+			break;
+
+		case GL_STACK_UNDERFLOW:
+			printToOutput(std::string("OpenGL Error: Stack Underflow -- ") + errorMessage + '\n');
+			break;
+
+		case GL_STACK_OVERFLOW:
+			printToOutput(std::string("OpenGL Error: Stack Overflow -- ") + errorMessage + '\n');
+			break;
+		}
+
+		exit(EXIT_FAILURE);
+	}
+}
+
+
+//==============================================================================
+// Prints to Output Window in Visual Studio
+//==============================================================================
+void Utility::printToOutput(std::string str) {
+	OutputDebugString(str.c_str());
 }

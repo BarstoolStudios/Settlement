@@ -1,3 +1,14 @@
+/******************************************************************************\
+* File: TerrainGenerator.cpp
+*
+* Author: Josh Taylor
+*
+* Header: TerrainGenerator.h
+*
+* Description: Class that generates a square piece of terrain in a seperate
+*              thread.
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include <vector>
 #include <future>
@@ -119,6 +130,7 @@ void TerrainGenerator::run(int X, int Y, bool shouldAdjust, std::mutex* generato
 			n2.pushOn(normals);
 		}
 	}
+	
 	generatorMutex->lock();
 	TerrainSquare square(X, Y, vertices, normals);
 	squaresToBuffer->push_back(square);

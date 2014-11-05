@@ -1,8 +1,15 @@
+/******************************************************************************\
+* File: Runner.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Runner.h
+*
+* Description: Entry point for game. Initializes game and starts game loop
+\******************************************************************************/
+
 #include "Main/App.h"
 
-//==============================================================================
-// Main Method -- Creates App and Then Starts Game Loop
-//==============================================================================
 int main(int argc, char *argv[]) {
 	App app;
 

@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: BoxCoord.cpp
+*
+* Author: Josh Taylor
+*
+* Header: BoxCoord.h
+*
+* Description: 
+\******************************************************************************/
+
 #include "Terrain/BoxCoord.h"
 #include <ostream>
 #include <string>

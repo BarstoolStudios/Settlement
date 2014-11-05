@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: TerrainUtil.cpp
+*
+* Author: Josh Taylor
+*
+* Header: TerrainUtil.h
+*
+* Description: Provides funtions for procedural terrain generation
+\******************************************************************************/
+
 #include <cstdlib>
 #include <cmath>
 #include "Util/TerrainUtil.h"

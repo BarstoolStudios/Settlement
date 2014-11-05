@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: Mouse.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Mouse.h
+*
+* Description: Provides wrapper and added functionality to SDL mouse
+\******************************************************************************/
+
 #include <GL/SDL.h>
 #include <iostream>
 #include "Main/Mouse.h"

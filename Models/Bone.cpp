@@ -1,3 +1,14 @@
+/******************************************************************************\
+* File: Bone.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Bone.h
+*
+* Description: Bone to be used to construct a skeleton. Bones are nodes in a
+*              tree data structure.
+\******************************************************************************/
+
 #include "Models/Bone.h"
 #include "Util/GLMath.h"
 

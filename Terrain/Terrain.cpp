@@ -1,3 +1,15 @@
+/******************************************************************************\
+* File: Terrain.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Terrain.h
+*
+* Description: Procedurally generated terrain
+*
+* Dev Note: Holy chocolate starfish batman, this needs some work
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include <vector>
 #include <mutex>

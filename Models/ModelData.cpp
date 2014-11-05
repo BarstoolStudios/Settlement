@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: ModelData.cpp
+*
+* Author: Josh Taylor
+*
+* Header: ModelData.h
+*
+* Description: Stores model data, returned after loading
+\******************************************************************************/
+
 #include <vector>
 #include <GL/glew.h>
 #include "Models/ModelData.h"

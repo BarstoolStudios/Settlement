@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: Skeleton.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Skeleton.h
+*
+* Description: Stores a tree of bones loaded from a .bar file
+\******************************************************************************/
+
 #include "Models/Skeleton.h"
 #include "Models/Bone.h"
 #include "Util/ShaderUtil.h"
@@ -172,7 +182,7 @@ void Skeleton::rotate(std::string name, Vector3f rotation) {
 	Bone* curr = getBone(name);
 
 	if(curr == NULL) {
-		ShaderUtil::printToOutput("ERROR -- " + name + " Bone Not Found");
+		Utility::printToOutput("ERROR -- " + name + " Bone Not Found");
 		return;
 	}
 
@@ -201,7 +211,7 @@ void Skeleton::rotateDown(std::string name, Vector3f rotation) {
 	Bone* curr = getBone(name);
 
 	if(curr == NULL) {
-		ShaderUtil::printToOutput("ERROR -- " + name + " Bone Not Found");
+		Utility::printToOutput("ERROR -- " + name + " Bone Not Found");
 		return;
 	}
 

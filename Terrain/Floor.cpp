@@ -1,3 +1,15 @@
+/******************************************************************************\
+* File: Floor.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Floor.h
+*
+* Description: Debugging Class for use instead of Terrain
+*
+* Dev Note: Don't Use
+\******************************************************************************/
+
 #include "GL/glew.h"
 #include <vector>
 #include <iostream>
@@ -5,10 +17,6 @@
 #include "Util/GLMath.h"
 #include "Util/ShaderUtil.h"
 
-
-//==============================================================================
-// Debugging Class for Drawing a Flat Ground -- Use instead of Terrain
-//==============================================================================
 
 std::string Floor::vertexShaderCode =
 	"uniform mat4 uMVP;\n"

@@ -1,3 +1,13 @@
+/******************************************************************************\
+* File: TerrainSquare.cpp
+*
+* Author: Josh Taylor
+*
+* Header: TerrainSquare.h
+*
+* Description: Created by TerrainGenerator and stores Terrain data
+\******************************************************************************/
+
 #include <GL/glew.h>
 #include <vector>
 #include <climits>

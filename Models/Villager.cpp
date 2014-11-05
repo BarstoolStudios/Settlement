@@ -1,8 +1,19 @@
+/******************************************************************************\
+* File: Villager.cpp
+*
+* Author: Josh Taylor
+*
+* Header: Villager.h
+*
+* Description: Villager Model rigged with Skeleton
+\******************************************************************************/
+
 #include "Models/Villager.h"
 #include "Util/GLMath.h"
 #include "Util/ShaderUtil.h"
 #include "Models/ModelData.h"
 #include <string>
+#include "Util/GameTimer.h"
 
 const float Villager::WALK_SPEED = 0.003f;
 const float Villager::FLEE_SPEED = 0.006f;
@@ -39,7 +50,9 @@ Villager::~Villager() {
 }
 
 void Villager::loadResources() {
+
 	ModelData data = ShaderUtil::loadModel("villager");
+
 
 	verticesVBO = data.getVerticesVBO();
 	normalsVBO = data.getNormalsVBO();
