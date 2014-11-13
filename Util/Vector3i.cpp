@@ -3,19 +3,19 @@
 #include <string>
 #include "Util/GLMath.h"
 
-Vector3f::Vector3f() {
+Vector3i::Vector3i() {
 	x = 0;
 	y = 0;
 	z = 0;
 }
 
-Vector3f::Vector3f(const Vector3f& vec) {
+Vector3i::Vector3i(const Vector3i& vec) {
 	x = vec.x;
 	y = vec.y;
 	z = vec.z;
 }
 
-Vector3f::Vector3f(GLfloat a, GLfloat b, GLfloat c) {
+Vector3i::Vector3i(GLint a, GLint b, GLint c) {
 	x = a;
 	y = b;
 	z = c;
@@ -24,154 +24,162 @@ Vector3f::Vector3f(GLfloat a, GLfloat b, GLfloat c) {
 //==============================================================================
 // Pushes Vector's floats onto floats in order <x, y, z>
 //==============================================================================
-void Vector3f::pushOn(std::vector<GLfloat>* floats) {
-	floats->push_back(x);
-	floats->push_back(y);
-	floats->push_back(z);
+void Vector3i::pushOn(std::vector<GLint>* ints) {
+	ints->push_back(x);
+	ints->push_back(y);
+	ints->push_back(z);
 }
 
 //==============================================================================
 // Overloaded Operators for Vector on Vector Operations. * is piecewise
 //==============================================================================
-Vector3f Vector3f::operator + (const Vector3f& vec) {
-	Vector3f temp;
+Vector3i Vector3i::operator + (const Vector3i& vec) {
+	Vector3i temp;
 	temp.x = x + vec.x;
 	temp.y = y + vec.y;
 	temp.z = z + vec.z;
 	return temp;
 }
 
-Vector3f Vector3f::operator - (const Vector3f& vec) {
-	Vector3f temp;
+Vector3i Vector3i::operator - (const Vector3i& vec) {
+	Vector3i temp;
 	temp.x = x - vec.x;
 	temp.y = y - vec.y;
 	temp.z = z - vec.z;
 	return temp;
 }
 
-Vector3f Vector3f::operator * (const Vector3f& vec) {
-	Vector3f temp;
+Vector3i Vector3i::operator * (const Vector3i& vec) {
+	Vector3i temp;
 	temp.x = x * vec.x;
 	temp.y = y * vec.y;
 	temp.z = z * vec.z;
 	return temp;
 }
 
-Vector3f Vector3f::operator / (const Vector3f& vec) {
-	Vector3f temp;
+Vector3i Vector3i::operator / (const Vector3i& vec) {
+	Vector3i temp;
 	temp.x = x / vec.x;
 	temp.y = y / vec.y;
 	temp.z = z / vec.z;
 	return temp;
 }
 
-Vector3f Vector3f::operator += (const Vector3f& vec) {
+Vector3i Vector3i::operator += (const Vector3i& vec) {
 	x += vec.x;
 	y += vec.y;
 	z += vec.z;
 	return *this;
 }
 
-Vector3f Vector3f::operator -= (const Vector3f& vec) {
+Vector3i Vector3i::operator -= (const Vector3i& vec) {
 	x -= vec.x;
 	y -= vec.y;
 	z -= vec.z;
 	return *this;
 }
 
-Vector3f Vector3f::operator *= (const Vector3f& vec) {
+Vector3i Vector3i::operator *= (const Vector3i& vec) {
 	x *= vec.x;
 	y *= vec.y;
 	z *= vec.z;
 	return *this;
 }
 
-Vector3f Vector3f::operator /= (const Vector3f& vec) {
+Vector3i Vector3i::operator /= (const Vector3i& vec) {
 	x /= vec.x;
 	y /= vec.y;
 	z /= vec.z;
 	return *this;
 }
 
-Vector3f Vector3f::operator + (float n) {
-	Vector3f temp;
+Vector3i Vector3i::operator + (int n) {
+	Vector3i temp;
 	temp.x = x + n;
 	temp.y = y + n;
 	temp.z = z + n;
 	return temp;
 }
 
-Vector3f Vector3f::operator - (float n) {
-	Vector3f temp;
+Vector3i Vector3i::operator - (int n) {
+	Vector3i temp;
 	temp.x = x - n;
 	temp.y = y - n;
 	temp.z = z - n;
 	return temp;
 }
 
-Vector3f Vector3f::operator * (float n) {
-	Vector3f temp;
+Vector3i Vector3i::operator * (int n) {
+	Vector3i temp;
 	temp.x = x * n;
 	temp.y = y * n;
 	temp.z = z * n;
 	return temp;
 }
 
-Vector3f Vector3f::operator / (float n) {
-	Vector3f temp;
+Vector3i Vector3i::operator / (int n) {
+	Vector3i temp;
 	temp.x = x / n;
 	temp.y = y / n;
 	temp.z = z / n;
 	return temp;
 }
 
-Vector3f Vector3f::operator += (float n) {
+Vector3i Vector3i::operator += (int n) {
 	x += n;
 	y += n;
 	z += n;
 	return *this;
 }
 
-Vector3f Vector3f::operator -= (float n) {
+Vector3i Vector3i::operator -= (int n) {
 	x -= n;
 	y -= n;
 	z -= n;
 	return *this;
 }
 
-Vector3f Vector3f::operator *= (float n) {
+Vector3i Vector3i::operator *= (int n) {
 	x *= n;
 	y *= n;
 	z *= n;
 	return *this;
 }
 
-Vector3f Vector3f::operator /= (float n) {
+Vector3i Vector3i::operator /= (int n) {
 	x /= n;
 	y /= n;
 	z /= n;
 	return *this;
 }
 
+bool Vector3i::operator == (const Vector3i& vec) {
+	return x == vec.x && y == vec.y && z == vec.z;
+}
+
+bool Vector3i::operator != (const Vector3i& vec) {
+	return x != vec.x || y != vec.y || z != vec.z;
+}
+
 //==============================================================================
 // Returns string Representation of Vector
 //==============================================================================
-std::string Vector3f::toString() {
+std::string Vector3i::toString() {
 	return std::string("(") + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 }
 
 //================================s==============================================
 // Returns v1 dot v2
 //==============================================================================
-GLfloat Vector3f::dot(const Vector3f& v1, const Vector3f& v2) {
+GLint Vector3i::dot(const Vector3i& v1, const Vector3i& v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 
 //==============================================================================
 // Returns v1 cross v2
 //==============================================================================
-Vector3f Vector3f::cross(const Vector3f& v1, const Vector3f& v2) {
-	Vector3f result;
+Vector3i Vector3i::cross(const Vector3i& v1, const Vector3i& v2) {
+	Vector3i result;
 
 	result.x = (v1.y * v2.z) - (v1.z * v2.y);
 	result.y = (v1.z * v2.x) - (v1.x * v2.z);
@@ -181,16 +189,8 @@ Vector3f Vector3f::cross(const Vector3f& v1, const Vector3f& v2) {
 }
 
 //==============================================================================
-// Returns Normalized vec
-//==============================================================================
-Vector3f Vector3f::norm(const Vector3f& vec) {
-	GLfloat len = std::sqrt((vec.x * vec.x) + (vec.y * vec.y) + (vec.z * vec.z));
-	return Vector3f(vec.x / len, vec.y / len, vec.z / len);
-}
-
-//==============================================================================
 // Overloads << for Streams
 //==============================================================================
-std::ostream& operator<<(std::ostream &strm, const Vector3f& vec) {
+std::ostream& operator<<(std::ostream &strm, const Vector3i& vec) {
 	return strm << '(' << vec.x << ", " << vec.y << ", " << vec.z << ")";
 }

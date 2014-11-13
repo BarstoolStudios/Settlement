@@ -8,7 +8,6 @@
 * Description: Provides funtions for use with GLMath's Classes
 \******************************************************************************/
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include "Util/GLMath.h"
 
@@ -20,7 +19,7 @@ Matrix4f GLMath::getPerspective(float fov, float height, float width, float zNea
 	Matrix4f result;
 
 	float aspectRatio = width / height;
-	float S = (float)(1 / tan(fov * 0.5f * M_PI / 180.0f));
+	float S = (float)(1 / tan(fov * 0.5f * PI_F / 180.0f));
 
 	result.m11 = S / aspectRatio;
 	result.m22 = S;
@@ -105,7 +104,7 @@ Matrix4f GLMath::getRotation(float x, float y, float z) {
 
 	if (x != 0) {
 		// Convert to radians
-		x *= (float)(M_PI / 180.0f);
+		x *= (float)(PI_F / 180.0f);
 
 		Matrix4f m;
 
@@ -118,7 +117,7 @@ Matrix4f GLMath::getRotation(float x, float y, float z) {
 	}
 	if (z != 0) {
 		// Convert to radians
-		z *= (float)(M_PI / 180.0f);
+		z *= (float)(PI_F / 180.0f);
 
 		Matrix4f m;
 
@@ -131,7 +130,7 @@ Matrix4f GLMath::getRotation(float x, float y, float z) {
 	}
 	if (y != 0) {
 		// Convert to radians
-		y *= (float)(M_PI / 180.0f);
+		y *= (float)(PI_F / 180.0f);
 
 		Matrix4f m;
 

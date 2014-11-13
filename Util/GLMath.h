@@ -5,7 +5,8 @@
 #include <ostream>
 #include <vector>
 
-
+#define PI_F 3.141592f
+#define PI_D 3.14159265358979323846
 
 class Vector4f {
 public:
@@ -27,12 +28,64 @@ public:
 	Vector4f operator *= (const Vector4f&);
 	Vector4f operator /= (const Vector4f&);
 
+	Vector4f operator + (float);
+	Vector4f operator - (float);
+	Vector4f operator * (float);
+	Vector4f operator / (float);
+
+	Vector4f operator += (float);
+	Vector4f operator -= (float);
+	Vector4f operator *= (float);
+	Vector4f operator /= (float);
+
 	std::string toString();
 
 	static GLfloat dot(const Vector4f&, const Vector4f&);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vector4f& vec);
+
+class Vector4i {
+public:
+	GLint x, y, z, w;
+
+	Vector4i();
+	Vector4i(const Vector4i& vec);
+	Vector4i(GLint, GLint, GLint, GLint);
+
+	void pushOn(std::vector<GLint>* floats);
+
+	Vector4i operator + (const Vector4i&);
+	Vector4i operator - (const Vector4i&);
+	Vector4i operator * (const Vector4i&);
+	Vector4i operator / (const Vector4i&);
+
+	Vector4i operator += (const Vector4i&);
+	Vector4i operator -= (const Vector4i&);
+	Vector4i operator *= (const Vector4i&);
+	Vector4i operator /= (const Vector4i&);
+
+	Vector4i operator + (int);
+	Vector4i operator - (int);
+	Vector4i operator * (int);
+	Vector4i operator / (int);
+
+	Vector4i operator += (int);
+	Vector4i operator -= (int);
+	Vector4i operator *= (int);
+	Vector4i operator /= (int);
+
+	bool operator == (const Vector4i&);
+	bool operator != (const Vector4i&);
+
+	std::string toString();
+
+	static GLint dot(const Vector4i&, const Vector4i&);
+};
+
+std::ostream& operator<<(std::ostream &strm, const Vector4i& vec);
+
+
 
 class Vector3f {
 	public:
@@ -54,6 +107,16 @@ class Vector3f {
 		Vector3f operator *= (const Vector3f&);
 		Vector3f operator /= (const Vector3f&);
 
+		Vector3f operator + (float);
+		Vector3f operator - (float);
+		Vector3f operator * (float);
+		Vector3f operator / (float);
+
+		Vector3f operator += (float);
+		Vector3f operator -= (float);
+		Vector3f operator *= (float);
+		Vector3f operator /= (float);
+
 		std::string toString();
 
 		static GLfloat dot(const Vector3f&, const Vector3f&);
@@ -63,6 +126,49 @@ class Vector3f {
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vector3f& vec);
+
+class Vector3i {
+public:
+	GLint x, y, z;
+
+	Vector3i();
+	Vector3i(const Vector3i& vec);
+	Vector3i(GLint, GLint, GLint);
+
+	void pushOn(std::vector<GLint>* floats);
+
+	Vector3i operator + (const Vector3i&);
+	Vector3i operator - (const Vector3i&);
+	Vector3i operator * (const Vector3i&);
+	Vector3i operator / (const Vector3i&);
+
+	Vector3i operator += (const Vector3i&);
+	Vector3i operator -= (const Vector3i&);
+	Vector3i operator *= (const Vector3i&);
+	Vector3i operator /= (const Vector3i&);
+
+	Vector3i operator + (int);
+	Vector3i operator - (int);
+	Vector3i operator * (int);
+	Vector3i operator / (int);
+
+	Vector3i operator += (int);
+	Vector3i operator -= (int);
+	Vector3i operator *= (int);
+	Vector3i operator /= (int);
+
+	bool operator == (const Vector3i&);
+	bool operator != (const Vector3i&);
+
+	std::string toString();
+
+	static GLint dot(const Vector3i&, const Vector3i&);
+	static Vector3i cross(const Vector3i&, const Vector3i&);
+};
+
+std::ostream& operator<<(std::ostream &strm, const Vector3i& vec);
+
+
 
 class Vector2f {
 	public:
@@ -84,12 +190,64 @@ class Vector2f {
 		Vector2f operator *= (const Vector2f&);
 		Vector2f operator /= (const Vector2f&);
 
+		Vector2f operator + (float);
+		Vector2f operator - (float);
+		Vector2f operator * (float);
+		Vector2f operator / (float);
+
+		Vector2f operator += (float);
+		Vector2f operator -= (float);
+		Vector2f operator *= (float);
+		Vector2f operator /= (float);
+
 		std::string toString();
 
 		static GLfloat dot(const Vector2f&, const Vector2f&);
 };
 
 std::ostream& operator<<(std::ostream &strm, const Vector2f& vec);
+
+class Vector2i {
+public:
+	GLint x, y;
+
+	Vector2i();
+	Vector2i(const Vector2i& vec);
+	Vector2i(GLint, GLint);
+
+	void pushOn(std::vector<GLint>* floats);
+
+	Vector2i operator + (const Vector2i&);
+	Vector2i operator - (const Vector2i&);
+	Vector2i operator * (const Vector2i&);
+	Vector2i operator / (const Vector2i&);
+
+	Vector2i operator += (const Vector2i&);
+	Vector2i operator -= (const Vector2i&);
+	Vector2i operator *= (const Vector2i&);
+	Vector2i operator /= (const Vector2i&);
+
+	Vector2i operator + (int);
+	Vector2i operator - (int);
+	Vector2i operator * (int);
+	Vector2i operator / (int);
+
+	Vector2i operator += (int);
+	Vector2i operator -= (int);
+	Vector2i operator *= (int);
+	Vector2i operator /= (int);
+
+	bool operator == (const Vector2i&);
+	bool operator != (const Vector2i&);
+
+	std::string toString();
+
+	static GLint dot(const Vector2i&, const Vector2i&);
+};
+
+std::ostream& operator<<(std::ostream &strm, const Vector2i& vec);
+
+
 
 class Matrix4f {
 	public:
