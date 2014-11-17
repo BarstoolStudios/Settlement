@@ -1,8 +1,12 @@
 #ifndef VILLAGER_H
 #define VILLAGER_H
-	
+
+class Villager;
+
 #include "Util/GLMath.h"
 #include "Models/Skeleton.h"
+#include "Main/Camera.h"
+#include "Terrain/Sun.h"
 #include <vector>
 
 class Villager {
@@ -36,7 +40,7 @@ public:
 
 	static void loadResources();
 
-	void draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection);
+	void draw(Camera& camera, Sun& sun);
 
 	Skeleton* getSkeleton();
 

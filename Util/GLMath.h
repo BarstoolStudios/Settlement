@@ -1,6 +1,16 @@
 #ifndef GLMATH_H
 #define GLMATH_H
 
+class Vector4f;
+class Vector4i;
+class Vector3f;
+class Vector3i;
+class Vector2f;
+class Vector2i;
+class Matrix4f;
+class Matrix3f;
+class Matrix2f;
+
 #include <GL/glew.h>
 #include <ostream>
 #include <vector>

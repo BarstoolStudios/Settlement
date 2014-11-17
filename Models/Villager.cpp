@@ -14,6 +14,8 @@
 #include "Models/ModelData.h"
 #include <string>
 #include "Util/GameTimer.h"
+#include "Main/Camera.h"
+#include "Terrain/Sun.h"
 
 const float Villager::WALK_SPEED = 0.003f;
 const float Villager::FLEE_SPEED = 0.006f;
@@ -113,7 +115,7 @@ void Villager::loadResources() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Villager::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
+void Villager::draw(Camera& camera, Sun& sun) {
 	
 	//------------------------------------------------------------------------------
 	// Create Model Matrix
@@ -125,7 +127,7 @@ void Villager::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Create ModelView Matrix
 	//------------------------------------------------------------------------------
-	Matrix4f modelView = view * model;
+	Matrix4f modelView = camera.getView() * model;
 
 	//------------------------------------------------------------------------------
 	// Create Normal Matrix
@@ -138,7 +140,7 @@ void Villager::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Create MVP Matrix
 	//------------------------------------------------------------------------------
-	Matrix4f MVP = projection * modelView;
+	Matrix4f MVP = camera.getProjection() * modelView;
 
 
 	glBindVertexArray(VAO);
@@ -148,7 +150,7 @@ void Villager::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Associate Sun Direction
 	//------------------------------------------------------------------------------
-	glUniform3f(sSunHandle, sunDirection.x, sunDirection.y, sunDirection.z);
+	glUniform3f(sSunHandle, sun.getPosition().x, sun.getPosition().y, 0);
 
 	//------------------------------------------------------------------------------
 	// Load MVP Matrix 

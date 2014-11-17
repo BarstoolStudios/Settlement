@@ -1,6 +1,8 @@
 #ifndef FACE_H
 #define FACE_H
 
+class Face;
+
 class Face {
 public:
 

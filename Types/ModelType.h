@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File: MoveType.h
+* File: ModelType.h
 *
 * Author: Josh Taylor
 *
@@ -9,12 +9,11 @@
 *           other types.
 \******************************************************************************/
 
-#ifndef MOVETYPE_H
-#define MOVETYPE_H
+#ifndef MODELTYPE_H
+#define MODELTYPE_H
 
-enum MoveType {
-	UNDEFINED, NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST,
-	SOUTHWEST, SPRINT, WALK, RUN, JUMP, NO_MOVE
+enum ModelType {
+	TREE, VILLAGER
 };
 
 #endif

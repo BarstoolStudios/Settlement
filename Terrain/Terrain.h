@@ -1,31 +1,23 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include <GL/glew.h>
+class Terrain;
+
+#include <map>
+#include <functional>
 #include <future>
-#include <mutex>
-#include <vector>
+#include "Main/Player.h"
+#include "Main/Camera.h"
+#include "Terrain/Sun.h"
 #include "Util/GLMath.h"
-#include "Terrain/TerrainSquare.h"
-#include "Terrain/BoxCoord.h"
 #include "Main/Settings.h"
+#include "Terrain/TerrainSquare.h"
 
 class Terrain {
-	const int SIZE_OF_FLOAT = sizeof(GLfloat);
+
 	const int SQUARE_FLOAT_COUNT = TERRAIN_SQUARE_SIZE * TERRAIN_SQUARE_SIZE * 18;
 	const int TOTAL_BUFFER_COUNT = SQUARE_FLOAT_COUNT * 9;
-	const int TOTAL_FLOAT_COUNT = TOTAL_BUFFER_COUNT / 3;
-
-	Vector3f color;
-
-	std::vector<TerrainSquare> squares;
-	std::vector<TerrainSquare> squaresToBuffer;
-	std::vector<BoxCoord> squareCoordList;
-	std::vector<std::future<void>*> futures;
-
-	BoxCoord* memory[9];
-
-	TerrainSquare prev;
+	const int TOTAL_VERT_COUNT = TOTAL_BUFFER_COUNT / 3;
 
 	GLuint VAO;
 
@@ -33,46 +25,43 @@ class Terrain {
 
 	GLuint shaderProgram;
 
-	GLuint vboTerrainVertexHandle, vboTerrainNormalHandle;
+	GLuint vertexVBO, normalVBO;
 
-	static Vector2f fountainLocation;
-	static float fountainHeight;
-	static int fountainRadius;
+	Vector2i prevSquare;
 
-	std::mutex generatorMutex;
+	Vector2i memory[9];
+
+	struct vecComp {
+		bool operator () (const Vector2i& v1, const Vector2i& v2) const 
+		{if(v1.x == v2.x) return v1.y < v2.y; return v1.x < v2.x;}
+	};
+
+	std::map<Vector2i, std::future<TerrainSquare>*, vecComp> futureSquares;
 
 public:
-	Terrain();
 
-	Terrain(Vector2f startPosition);
+	const static int NOISE_SIZE = 256;
 
-	BoxCoord getSquareCoord(float x, float z);
+	Terrain(Player& player);
 
-	TerrainSquare* getSquareAt(float x, float y);
+	void update(Player& player);
 
-	void draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection);
-
-	void update(Vector3f pos);
-
-	std::future<void>* addSquare(int x, int y);
-
-	void deleteSquare(TerrainSquare square);
-
-	TerrainSquare* getSquare(int x, int y);
-
-	int getAvailableSquare();
+	void draw(Camera& camera, Sun& sun);
 
 	float getHeightAt(float x, float y);
 
-	Vector2f getCenterOfInfluence();
+	void addSquare(Vector2i coord);
 
-	bool isFountainPlaced();
+	void deleteSquare(Vector2i coord);
 
-	int getInfluenceRadius();
+	int getAvailableSquare();
 
-	void placeFountain(int x, int z, int r);
+	Vector2i getSquareCoord(Vector3f pos);
 
-	void updateVBO();
+	static TerrainSquare generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOISE_SIZE]);
+
+private:
+	int NOISE[NOISE_SIZE][NOISE_SIZE];
 };
 
-#endif
+#endif // TERRAIN_H

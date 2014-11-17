@@ -1,6 +1,8 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
+class Display;
+
 #include <GL/glew.h>
 #include <GL/SDL.h>
 

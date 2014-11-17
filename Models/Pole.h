@@ -1,16 +1,17 @@
-#ifndef TREE_H
-#define TREE_H
+#ifndef POLE_H
+#define POLE_H
 
-class Tree;
+class Pole;
 
 #include <GL/glew.h>
 #include "Util/GLMath.h"
 #include "Main/Camera.h"
 #include "Terrain/Sun.h"
 
-class Tree {
+class Pole {
 
 	Vector3f position;
+	Vector3f color;
 
 	static GLuint VAO;
 
@@ -23,11 +24,12 @@ class Tree {
 	static int vertCount;
 
 public:
-	Tree(Vector3f position);
+
+	Pole(Vector3f position, Vector3f color);
 
 	static void loadResources();
 
 	void draw(Camera& camera, Sun& sun);
 };
 
-#endif
+#endif // POLE_H

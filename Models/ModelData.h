@@ -1,6 +1,8 @@
 #ifndef MODELDATA_H
 #define MODELDATA_H
 
+class ModelData;
+
 #include <vector>
 #include <GL/glew.h>
 #include "Models/Skeleton.h"

@@ -1,6 +1,8 @@
 #ifndef SKELETON_H
 #define SKELETON_H
 
+class Skeleton;
+
 #include <string>
 #include <fstream>
 #include <vector>

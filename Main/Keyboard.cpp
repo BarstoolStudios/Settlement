@@ -37,7 +37,7 @@ void Keyboard::update() {
 // Returns Whether Key is Down
 //==============================================================================
 bool Keyboard::isKeyDown(int key) {
-	return (bool) keys[key];
+	return (bool)keys[key];
 }
 
 //==============================================================================

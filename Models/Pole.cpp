@@ -1,49 +1,33 @@
-/******************************************************************************\
-* File: Tree.cpp
-*
-* Author: Josh Taylor
-*
-* Header: Tree.h
-*
-* Description: Tree Model
-\******************************************************************************/
-
-#include <GL/glew.h>
-#include "Models/Tree.h"
-#include "Util/GLMath.h"
+#include "Models/Pole.h"
 #include "Util/ShaderUtil.h"
-
 
 //==============================================================================
 // Initialize Static Variables
 //==============================================================================
-GLuint Tree::VAO = 0;
-GLuint Tree::shaderProgram = 0;
-GLuint Tree::verticesVBO = 0;
-GLuint Tree::normalsVBO = 0;
+GLuint Pole::VAO = 0;
+GLuint Pole::shaderProgram = 0;
+GLuint Pole::verticesVBO = 0;
+GLuint Pole::normalsVBO = 0;
 
-GLint Tree::sPositionHandle = 0;
-GLint Tree::sNormalHandle = 0;
-GLint Tree::sSunHandle = 0;
-GLint Tree::sMVPHandle = 0;
-GLint Tree::sNormalMatrixHandle = 0;
+GLint Pole::sPositionHandle = 0;
+GLint Pole::sNormalHandle = 0;
+GLint Pole::sSunHandle = 0;
+GLint Pole::sMVPHandle = 0;
+GLint Pole::sNormalMatrixHandle = 0;
 
-int Tree::vertCount = 0;
+int Pole::vertCount = 0;
 
-//==============================================================================
-// Constructor
-//==============================================================================
-Tree::Tree(Vector3f position) 
-	:
-	position(position)
-	{}
+Pole::Pole(Vector3f position, Vector3f color)
+:
+	position(position),
+	color(color)
+{}
 
 //==============================================================================
 // Loads Model Data into OpenGL and Stores Handles in Static Variables
 //==============================================================================
-void Tree::loadResources() {
-
-	shaderProgram = ShaderUtil::createProgram("Tree", std::vector < GLenum > {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER}, true);
+void Pole::loadResources() {
+	shaderProgram = ShaderUtil::createProgram("Pole", std::vector < GLenum > {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER}, true);
 
 	sPositionHandle = glGetAttribLocation(shaderProgram, "iPosition");
 	sNormalHandle = glGetAttribLocation(shaderProgram, "iNormal");
@@ -51,7 +35,7 @@ void Tree::loadResources() {
 	sMVPHandle = glGetUniformLocation(shaderProgram, "uMVP");
 	sNormalMatrixHandle = glGetUniformLocation(shaderProgram, "uNormalMatrix");
 
-	ModelData data = ShaderUtil::loadModel("tree");
+	ModelData data = ShaderUtil::loadModel("pole");
 
 	verticesVBO = data.getVerticesVBO();
 	normalsVBO = data.getNormalsVBO();
@@ -84,7 +68,8 @@ void Tree::loadResources() {
 //==============================================================================
 // Draws Model
 //==============================================================================
-void Tree::draw(Camera& camera, Sun& sun) {
+void Pole::draw(Camera& camera, Sun& sun) {
+
 	//------------------------------------------------------------------------------
 	// Create Model Matrix
 	//------------------------------------------------------------------------------
@@ -119,7 +104,7 @@ void Tree::draw(Camera& camera, Sun& sun) {
 	glUseProgram(shaderProgram);
 
 	//------------------------------------------------------------------------------
-	// Load Sun Direction
+	// Associate Sun Direction
 	//------------------------------------------------------------------------------
 	glUniform3f(sSunHandle, sun.getPosition().x, sun.getPosition().y, 0);
 
@@ -138,7 +123,7 @@ void Tree::draw(Camera& camera, Sun& sun) {
 	glUniformMatrix3fv(sNormalMatrixHandle, 1, GL_TRUE, arrNorm);
 
 	//------------------------------------------------------------------------------
-	// Draw
+	// Unbind / Disable Code
 	//------------------------------------------------------------------------------
 	glDrawArrays(GL_TRIANGLES, 0, vertCount);
 

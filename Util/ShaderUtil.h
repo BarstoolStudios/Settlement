@@ -1,3 +1,6 @@
+#ifndef SHADERUTIL_H
+#define SHADERUTIL_H
+
 #include <GL/glew.h>
 #include <iostream>
 #include <vector>
@@ -21,3 +24,5 @@ namespace ShaderUtil {
 	void printProgramStatus(GLint handle);
 
 }
+
+#endif // SHADERUTIL_H

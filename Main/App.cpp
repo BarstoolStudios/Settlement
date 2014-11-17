@@ -5,7 +5,7 @@
 *
 * Header: App.h
 *
-* Description: Conatins major functions for game loop and game loop
+* Description: Conatins major functions for game and game loop
 \******************************************************************************/
 
 #include <GL/glew.h>
@@ -19,6 +19,7 @@
 #include "Models/Tree.h"
 #include "Util/Text.h"
 #include "Models/Villager.h"
+#include "Models/Pole.h"
 
 //==============================================================================
 // Constructor
@@ -32,12 +33,12 @@ App::App() {
 	keyboard = new Keyboard();
 	mouse = new Mouse();
 	timer = new GameTimer();
-	camera = new Camera(Vector2f(128,128));
+	camera = new Camera();
+	sun = new Sun(0);
 
-	double t = GameTimer::getTime();
-	terrain = new Terrain();
-	t = GameTimer::getTime() - t;
-	std::cout << "Terrain: " << t << " ms" << std::endl;
+	worldState = new WorldState();
+
+	terrain = new Terrain(*(worldState->player));
 
 	//------------------------------------------------------------------------------
 	// Load Static Resources
@@ -45,20 +46,12 @@ App::App() {
 	loadResources();
 
 	//------------------------------------------------------------------------------
-	// Create Members
-	//------------------------------------------------------------------------------
-	trees = new std::list<Tree>();
-	villager = new Villager(Vector3f(0, terrain->getHeightAt(0, 0), 0));
-
-	//------------------------------------------------------------------------------
 	// Grabs Mouse
 	//------------------------------------------------------------------------------
 	mouse->setGrabbed(true);
 
-	//------------------------------------------------------------------------------
-	// Adds a tree (Testing Code)
-	//------------------------------------------------------------------------------
-	trees->push_back(Tree(Vector3f(0, terrain->getHeightAt(0, -10), -10)));
+	worldState->trees->push_back(Tree(Vector3f(0, terrain->getHeightAt(0, -10), -10)));
+
 }
 
 //==============================================================================
@@ -71,8 +64,7 @@ App::~App() {
 	delete timer;
 	delete camera;
 	delete terrain;
-	delete trees;
-	delete villager;
+	delete worldState;
 }
 //==============================================================================
 // Load Static Resources
@@ -90,6 +82,10 @@ void App::loadResources() {
 	t = GameTimer::getTime() - t;
 	std::cout << "Tree: " << t << " ms" << std::endl;
 
+	t = GameTimer::getTime();
+	Pole::loadResources();
+	t = GameTimer::getTime() - t;
+	std::cout << "Pole: " << t << " ms" << std::endl;
 
 	t = GameTimer::getTime();
 	Text::loadResources();
@@ -102,10 +98,7 @@ void App::loadResources() {
 //==============================================================================
 void App::input() {
 
-	//------------------------------------------------------------------------------
-	// Camera Input
-	//------------------------------------------------------------------------------
-	camera->input(*keyboard, *mouse);
+	worldState->player->input(*keyboard, *mouse, *timer);
 
 	//------------------------------------------------------------------------------
 	// Debugging Code
@@ -120,19 +113,7 @@ void App::input() {
 
 	if(keyboard->wasKeyPressed(Keyboard::KEY_F3))
 		displayDebug = !displayDebug;
-		
 
-	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_8))
-		villager->getSkeleton()->rotate("Radius_R", Vector3f(2, 0, 0));
-
-	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_5))
-		villager->getSkeleton()->rotate("Radius_R", Vector3f(-2, 0, 0));
-
-	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_7))
-		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(2, 0, 0));
-
-	if(keyboard->isKeyDown(Keyboard::KEY_NUMPAD_4))
-		villager->getSkeleton()->rotateDown("Humerous_R", Vector3f(-2, 0, 0));
 }
 
 //==============================================================================
@@ -158,12 +139,23 @@ void App::update() {
 	//------------------------------------------------------------------------------
 	// Update Camera
 	//------------------------------------------------------------------------------
-	camera->update(*timer, *terrain);
+	camera->update(*(worldState->player));
 
 	//------------------------------------------------------------------------------
 	// Update Terrain
 	//------------------------------------------------------------------------------
-	terrain->update(camera->getPosition());
+	terrain->update(*(worldState->player));
+
+	//------------------------------------------------------------------------------
+	// Update Player
+	//------------------------------------------------------------------------------
+	worldState->player->update(*terrain, *timer);
+
+	//------------------------------------------------------------------------------
+	// Update Player
+	//------------------------------------------------------------------------------
+	sun->update(*timer);
+
 }
 
 //==============================================================================
@@ -171,18 +163,9 @@ void App::update() {
 //==============================================================================
 void App::render() {
 
-	//------------------------------------------------------------------------------
-	// Draw Terrain
-	//------------------------------------------------------------------------------
-	terrain->draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
+	worldState->draw(*camera, *sun);
 
-	//------------------------------------------------------------------------------
-	// Draw Trees
-	//------------------------------------------------------------------------------
-	for(auto& tree : *trees)
-		tree.draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
-
-	villager->draw(camera->getProjection(), camera->getView(), Vector3f(1, 1, 1));
+	terrain->draw(*camera, *sun);
 
 	//------------------------------------------------------------------------------
 	// Display Debugging Info
@@ -191,9 +174,9 @@ void App::render() {
 
 		std::ostringstream debug;
 
-		debug	<< "Position: " << camera->getPosition() << '\n'
-				<< "Rotation: " << camera->getRotation() << '\n'
-				<< "Current Square: " << terrain->getSquareCoord(camera->getPosition().x, camera->getPosition().z).toString() << '\n';
+		debug	<< "Position: " << worldState->player->getPosition() << '\n'
+				<< "Rotation: " << worldState->player->getRotation() << '\n'
+				<< "Day Time: "	<< sun->toString() << '\n';
 
 		Text::draw(debug.str(), Vector2f(22,22), 12, camera->getTransform2D());
 	}

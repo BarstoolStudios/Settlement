@@ -8,8 +8,12 @@ in vec3 iNormal;
 out vec3 oColor;
 
 void main() {
+
 	vec3 diffuse = uColor * max(0.0, dot(normalize(iNormal), normalize(uSunDirection))) * 0.5;
 	vec3 ambient = uColor * 0.5;
-	oColor = ambient + diffuse;
-	gl_Position =  uMVP * vec4(iPosition, 1);
+
+	oColor = diffuse + ambient;
+	
+	gl_Position = uMVP * vec4(iPosition, 1);
+
 }

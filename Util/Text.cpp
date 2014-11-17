@@ -80,7 +80,7 @@ void Text::draw(std::string text, Vector2f startPos, float width, Matrix3f trans
 		int iChar = (int) text[i];
 
 		if(iChar > 32 && iChar < 127) {
-			Vector2f letterCoord = getLetterCoords(iChar);
+			Vector2i letterCoord = getLetterCoords(iChar);
 
 			v1 = Vector2f(curr.x, curr.y);
 			t1 = Vector2f(letterCoord.x * letterWidth / textureWidth, letterCoord.y * letterHeight / textureHeight);
@@ -155,7 +155,7 @@ void Text::draw(std::string text, Vector2f startPos, float width, Matrix3f trans
 	glEnableVertexAttribArray(sTexCoordHandle);
 	glVertexAttribPointer(sTexCoordHandle, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-	glDrawArrays(GL_TRIANGLES, 0, positions.size() / 2);
+	glDrawArrays(GL_TRIANGLES, 0, (int)positions.size() / 2);
 
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -165,6 +165,6 @@ void Text::draw(std::string text, Vector2f startPos, float width, Matrix3f trans
 //==============================================================================
 // Gets the Grid Coordinate of Letter
 //==============================================================================
-Vector2f Text::getLetterCoords(int n) {
-	return Vector2f((n - 33) % 10, (n - 33) / 10);
+Vector2i Text::getLetterCoords(int n) {
+	return Vector2i((n - 33) % 10, (n - 33) / 10);
 }

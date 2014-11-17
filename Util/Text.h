@@ -1,6 +1,8 @@
 #ifndef TEXT_H
 #define TEXT_H
 
+class Text;
+
 #include <string>
 #include "GLMath.h"
 
@@ -19,7 +21,7 @@ class Text {
 
 	static GLint sTransformHandle, sPositionHandle, sTexCoordHandle, sTextureHandle;
 
-	static Vector2f getLetterCoords(int n);
+	static Vector2i getLetterCoords(int n);
 
 public:
 	static void loadResources();

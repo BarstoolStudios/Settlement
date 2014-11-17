@@ -1,6 +1,8 @@
 #ifndef BONE_H
 #define BONE_H
 
+class Bone;
+
 #include <vector>
 #include <string>
 #include <Util/GLMath.h>

@@ -1,61 +1,42 @@
-/******************************************************************************\
-* File: Terrain.cpp
-*
-* Author: Josh Taylor
-*
-* Header: Terrain.h
-*
-* Description: Procedurally generated terrain
-*
-* Dev Note: Holy chocolate starfish batman, this needs some work
-\******************************************************************************/
-
-#include <GL/glew.h>
-#include <vector>
-#include <mutex>
-#include <cmath>
-#include <stdexcept>
-#include <string>
-#include <iostream>
-#include <future>
 #include "Terrain/Terrain.h"
-#include "Terrain/TerrainSquare.h"
-#include "Terrain/TerrainGenerator.h"
-#include "Util/TerrainUtil.h"
-#include "Util/GLMath.h"
-#include "Terrain/BoxCoord.h"
 #include "Util/ShaderUtil.h"
 #include "Util/Utility.h"
-#include "Main/Settings.h"
+#include "Util/TerrainUtil.h"
+#include "Terrain/TerrainSquare.h"
+#include <climits>
+#include <future>
 
-//==============================================================================
-// Initialize Static Variables
-//==============================================================================
-Vector2f Terrain::fountainLocation = Vector2f(0, 0);
-float Terrain::fountainHeight = 0.0f;
-int Terrain::fountainRadius = -1;
 
-//==============================================================================
-// Constructors
-//==============================================================================
-Terrain::Terrain() : Terrain(Vector2f(0, 0)) {}
-
-Terrain::Terrain(Vector2f startPosition) {
+Terrain::Terrain(Player& player) {
 	
-	color = Vector3f(0.36f, 0.25f, 0.2f);
+	//------------------------------------------------------------------------------
+	// Generate Noise
+	//------------------------------------------------------------------------------
+	std::srand(GAME_SEED);
+	for(int i = 0; i < NOISE_SIZE; i++) {
+		for(int j = 0; j < NOISE_SIZE; j++) {
+			NOISE[i][j] = std::rand();
+		}
+	}
 
 	//------------------------------------------------------------------------------
-	// Setup Helper Classes
+	// Initialize Memory
 	//------------------------------------------------------------------------------
-	TerrainUtil::seedNoise(GAME_SEED);
+	for(int i = 0; i < 9; i++) {
+		memory[i] = Vector2i(INT_MAX, INT_MAX);
+	}
 
+	//------------------------------------------------------------------------------
+	// Create and Bind VAO
+	//------------------------------------------------------------------------------
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	//------------------------------------------------------------------------------
 	// Create Shader Program
 	//------------------------------------------------------------------------------
-	shaderProgram = ShaderUtil::createProgram("Terrain", std::vector<GLenum>{GL_VERTEX_SHADER, GL_FRAGMENT_SHADER}, true);
+	std::vector<GLenum> shadersUsed = { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER };
+	shaderProgram = ShaderUtil::createProgram("Terrain", shadersUsed, true);
 
 	//------------------------------------------------------------------------------
 	// Get Shader Variable Locations
@@ -71,83 +52,22 @@ Terrain::Terrain(Vector2f startPosition) {
 	//------------------------------------------------------------------------------
 	GLuint buffs[2];
 	glGenBuffers(2, buffs);
-	vboTerrainVertexHandle = buffs[0];
-	vboTerrainNormalHandle = buffs[1];
+	vertexVBO = buffs[0];
+	normalVBO = buffs[1];
 
 	//------------------------------------------------------------------------------
 	// Allocate Memory for Position Data
 	//------------------------------------------------------------------------------
-	glBindBuffer(GL_ARRAY_BUFFER, vboTerrainVertexHandle);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
 	glBufferData(GL_ARRAY_BUFFER, TOTAL_BUFFER_COUNT * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
-
-	//------------------------------------------------------------------------------
-	// Allocate Memory for Normal Data
-	//------------------------------------------------------------------------------
-	glBindBuffer(GL_ARRAY_BUFFER, vboTerrainNormalHandle);
-	glBufferData(GL_ARRAY_BUFFER, TOTAL_BUFFER_COUNT * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	BoxCoord currSquare = getSquareCoord(startPosition.x, startPosition.y);
-
-	for (int i = -1; i <= 1; i++) {
-		for (int j = -1; j <= 1; j++) {
-			TerrainGenerator gen(currSquare.x + i, currSquare.y + j, squaresToBuffer, generatorMutex);
-			futures.push_back(gen.start());
-		}
-	}
-
-	for(auto future : futures) {
-		future->wait();
-		delete future;
-	}
-
-	futures.clear();
-
-	int n = 0;
-
-	for (auto& square : squaresToBuffer) {
-		//------------------------------------------------------------------------------
-		// Buffer Position Data for Squares Into VBO
-		//------------------------------------------------------------------------------
-		glBindBuffer(GL_ARRAY_BUFFER, vboTerrainVertexHandle);
-		glBufferSubData(GL_ARRAY_BUFFER,
-						SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
-						SQUARE_FLOAT_COUNT * sizeof(GLfloat), 
-						&((*square.vertices)[0]));
-
-		//------------------------------------------------------------------------------
-		// Buffer Normal Data for Squares Into VBO
-		//------------------------------------------------------------------------------
-		glBindBuffer(GL_ARRAY_BUFFER, vboTerrainNormalHandle);
-		glBufferSubData(GL_ARRAY_BUFFER,
-						SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
-						SQUARE_FLOAT_COUNT * sizeof(GLfloat),
-						&((*square.normals)[0]));
-
-		delete square.vertices;
-		delete square.normals;
-
-		squares.push_back(square);
-		squareCoordList.push_back(BoxCoord(square.x, square.y));
-		memory[n] = new BoxCoord(square.x, square.y);
-		n++;
-	}
-	squaresToBuffer.clear();
-
-	glUseProgram(shaderProgram);
-
-	//------------------------------------------------------------------------------
-	// Load Vertex Data
-	//------------------------------------------------------------------------------
-	glBindBuffer(GL_ARRAY_BUFFER, vboTerrainVertexHandle);
 	glEnableVertexAttribArray(sPositionHandle);
 	glVertexAttribPointer(sPositionHandle, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	//------------------------------------------------------------------------------
-	// Load Normal Data
+	// Allocate Memory for Normal Data
 	//------------------------------------------------------------------------------
-	glBindBuffer(GL_ARRAY_BUFFER, vboTerrainNormalHandle);
+	glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+	glBufferData(GL_ARRAY_BUFFER, TOTAL_BUFFER_COUNT * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(sNormalHandle);
 	glVertexAttribPointer(sNormalHandle, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
@@ -155,57 +75,130 @@ Terrain::Terrain(Vector2f startPosition) {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	prev = *getSquare(currSquare.x, currSquare.y);
+	Vector2i currSquare = getSquareCoord(player.getPosition());
 
-}
-
-//==============================================================================
-// Returns the Grid Coordinate of Top Left Corner of Square that Contains (x, y)
-//==============================================================================
-BoxCoord Terrain::getSquareCoord(float x, float z) {
-	int sx, sz;
-	if (x >= 0)
-		sx = (int)x / TERRAIN_SQUARE_SIZE;
-	else
-		sx = ((int)x / TERRAIN_SQUARE_SIZE) - 1;
-	if (z >= 0)
-		sz = (int)z / TERRAIN_SQUARE_SIZE;
-	else
-		sz = ((int)z / TERRAIN_SQUARE_SIZE) - 1;
-
-	return BoxCoord(sx, sz);
-}
-
-//==============================================================================
-// Returns Square that Contains (x, y)
-//==============================================================================
-TerrainSquare* Terrain::getSquareAt(float x, float y) {
-	int sx, sz;
-	if (x >= 0)
-		sx = (int)x / TERRAIN_SQUARE_SIZE;
-	else
-		sx = ((int)x / TERRAIN_SQUARE_SIZE) - 1;
-	if (y >= 0)
-		sz = (int)y / TERRAIN_SQUARE_SIZE;
-	else
-		sz = ((int)y / TERRAIN_SQUARE_SIZE) - 1;
-
-	for (TerrainSquare& square : squares) {
-		if (square.x == sx && square.y == sz) {
-			return &square;
+	for(int i = -1; i <= 1; i++) {
+		for(int j = -1; j <= 1; j++) {
+			addSquare(currSquare + Vector2i(i, j));
 		}
 	}
-	throw std::invalid_argument(std::string("Square containing (") + std::to_string(x) + ", " + std::to_string(y) + ") is not loaded");
+
+	prevSquare = currSquare;
+
+	for(auto& kv : futureSquares) {
+		kv.second->wait();
+		TerrainSquare s = kv.second->get();
+
+		int n = getAvailableSquare();
+
+		glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+		glBufferSubData(GL_ARRAY_BUFFER,
+			SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
+			SQUARE_FLOAT_COUNT * sizeof(GLfloat),
+			&((*s.vertices)[0]));
+
+		glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+		glBufferSubData(GL_ARRAY_BUFFER,
+			SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
+			SQUARE_FLOAT_COUNT * sizeof(GLfloat),
+			&((*s.normals)[0]));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		delete s.normals;
+		delete s.vertices;
+
+		memory[n] = kv.first;
+
+		delete kv.second;
+	}
+
+	futureSquares.clear();
+
 }
 
-//==============================================================================
-// Draws Terrain
-//==============================================================================
-void Terrain::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
+void Terrain::update(Player& player) {
+	Vector2i currSquare = getSquareCoord(player.getPosition());
+
+	if(currSquare != prevSquare) {
+
+		std::cout << currSquare << std::endl;
+
+		if(currSquare.x > prevSquare.x) {
+			deleteSquare(Vector2i(prevSquare.x - 1, prevSquare.y));
+			deleteSquare(Vector2i(prevSquare.x - 1, prevSquare.y - 1));
+			deleteSquare(Vector2i(prevSquare.x - 1, prevSquare.y + 1));
+
+			addSquare(Vector2i(currSquare.x + 1, currSquare.y));
+			addSquare(Vector2i(currSquare.x + 1, currSquare.y - 1));
+			addSquare(Vector2i(currSquare.x + 1, currSquare.y + 1));
+		} else if(currSquare.x < prevSquare.x) {
+			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y));
+			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y - 1));
+			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y + 1));
+
+			addSquare(Vector2i(currSquare.x - 1, currSquare.y));
+			addSquare(Vector2i(currSquare.x - 1, currSquare.y - 1));
+			addSquare(Vector2i(currSquare.x - 1, currSquare.y + 1));
+		}
+
+		if(currSquare.y > prevSquare.y) {
+			deleteSquare(Vector2i(prevSquare.x,		prevSquare.y - 1));
+			deleteSquare(Vector2i(prevSquare.x - 1,	prevSquare.y - 1));
+			deleteSquare(Vector2i(prevSquare.x + 1,	prevSquare.y - 1));
+
+			addSquare(Vector2i(currSquare.x,		currSquare.y + 1));
+			addSquare(Vector2i(currSquare.x - 1,	currSquare.y + 1));
+			addSquare(Vector2i(currSquare.x + 1,	currSquare.y + 1));
+		} else if(currSquare.y < prevSquare.y) {
+			deleteSquare(Vector2i(prevSquare.x,		prevSquare.y + 1));
+			deleteSquare(Vector2i(prevSquare.x - 1, prevSquare.y + 1));
+			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y + 1));
+
+			addSquare(Vector2i(currSquare.x,		currSquare.y - 1));
+			addSquare(Vector2i(currSquare.x - 1,	currSquare.y - 1));
+			addSquare(Vector2i(currSquare.x + 1,	currSquare.y - 1));
+		}
+		prevSquare = currSquare;
+	}
+
+	for(auto& kv : futureSquares) {
+		if(kv.second->wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+			TerrainSquare s = kv.second->get();
+
+			int n = getAvailableSquare();
+
+			glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+			glBufferSubData(GL_ARRAY_BUFFER,
+				SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
+				SQUARE_FLOAT_COUNT * sizeof(GLfloat),
+				&((*s.vertices)[0]));
+
+			glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+			glBufferSubData(GL_ARRAY_BUFFER,
+				SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
+				SQUARE_FLOAT_COUNT * sizeof(GLfloat),
+				&((*s.normals)[0]));
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			delete s.normals;
+			delete s.vertices;
+
+			memory[n] = kv.first;
+
+			delete kv.second;
+
+			futureSquares.erase(kv.first);
+			break;
+		}
+	}
+
+}
+
+void Terrain::draw(Camera& camera, Sun& sun) {
 	//------------------------------------------------------------------------------
 	// Create MVP Matrix
 	//------------------------------------------------------------------------------
-	Matrix4f MVP = projection * view;
+	Matrix4f MVP = camera.getProjection() * camera.getView();
 
 	glBindVertexArray(VAO);
 
@@ -217,12 +210,12 @@ void Terrain::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Load Color
 	//------------------------------------------------------------------------------
-	glUniform3f(sColorHandle, color.x, color.y, color.z);
+	glUniform3f(sColorHandle, 0.36f, 0.25f, 0.2f);
 
 	//------------------------------------------------------------------------------
 	// Load Sun Position
 	//------------------------------------------------------------------------------
-	glUniform3f(sSunHandle, sunDirection.x, sunDirection.y, sunDirection.z);
+	glUniform3f(sSunHandle, sun.getPosition().x, sun.getPosition().y, 0);
 
 	//------------------------------------------------------------------------------
 	// Load MVP Matrix 
@@ -234,7 +227,7 @@ void Terrain::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	//------------------------------------------------------------------------------
 	// Draw
 	//------------------------------------------------------------------------------
-	glDrawArrays(GL_TRIANGLES, 0, TOTAL_FLOAT_COUNT);
+	glDrawArrays(GL_TRIANGLES, 0, TOTAL_VERT_COUNT);
 
 	//------------------------------------------------------------------------------
 	// Unbind / Disable Code
@@ -244,194 +237,114 @@ void Terrain::draw(Matrix4f projection, Matrix4f view, Vector3f sunDirection) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-//==============================================================================
-// Update Terrain
-//==============================================================================
-void Terrain::update(Vector3f pos) {
-	TerrainSquare curr = *getSquareAt(pos.x, pos.z);
+float Terrain::getHeightAt(float x, float y) {
+	return TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, x, y, NOISE) * (float) TERRAIN_HEIGHT;
+}
 
-	if (curr != prev) {
-		if (curr.x > prev.x) {
-			addSquare(curr.x + 1, curr.y);
-			addSquare(curr.x + 1, curr.y - 1);
-			addSquare(curr.x + 1, curr.y + 1);
-		}
-		else if (curr.x < prev.x) {
-			addSquare(curr.x - 1, curr.y);
-			addSquare(curr.x - 1, curr.y - 1);
-			addSquare(curr.x - 1, curr.y + 1);
-		}
+void Terrain::addSquare(Vector2i coord) {
 
-		if (curr.y > prev.y) {
-			addSquare(curr.x, curr.y + 1);
-			addSquare(curr.x - 1, curr.y + 1);
-			addSquare(curr.x + 1, curr.y + 1);
-		}
-		else if (curr.y < prev.y){
-			addSquare(curr.x, curr.y - 1);
-			addSquare(curr.x - 1, curr.y - 1);
-			addSquare(curr.x + 1, curr.y - 1);
-		}
-		prev = curr;
+	// Check is square exists in memory
+	for(int i = 0; i < 9; i++) {
+		if(memory[i] == coord)
+			return;
 	}
-
-	std::vector<TerrainSquare> squaresToRemove;
-	for (TerrainSquare square : squares) {
-		if (std::abs(square.x - curr.x) > 1 || std::abs(square.y - curr.y) > 1){
-			squaresToRemove.push_back(square);
-		}
+	for(auto& kv : futureSquares) {
+		if(coord == kv.first)
+			return;
 	}
-
-
-	for (TerrainSquare square : squaresToRemove)
-		deleteSquare(square);
 	
-	generatorMutex.lock();
-		if (squaresToBuffer.size() > 0) {
-			int n = getAvailableSquare();
-			if (n != -1) {
-				TerrainSquare square = squaresToBuffer[0];
+	Utility::printToOutput(coord.toString() + " added\n");
 
-				glBindBuffer(GL_ARRAY_BUFFER, vboTerrainVertexHandle);
-				glBufferSubData(GL_ARRAY_BUFFER,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat),
-								&((*square.vertices)[0]));
-
-				glBindBuffer(GL_ARRAY_BUFFER, vboTerrainNormalHandle);
-				glBufferSubData(GL_ARRAY_BUFFER,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat),
-								&((*square.normals)[0]));
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-				delete square.normals;
-				delete square.vertices;
-
-				memory[n] = new BoxCoord(square.x, square.y);
-				squares.push_back(square);
-				squaresToBuffer.erase(squaresToBuffer.begin());
-			}
-		}
-	generatorMutex.unlock();
+	// Add Square
+	futureSquares[coord] = new std::future<TerrainSquare>(std::async(std::launch::async, Terrain::generateTerrain, coord, NOISE));
+	
 }
 
-//==============================================================================
-// Creates Thread to Generate Square
-//==============================================================================
-std::future<void>* Terrain::addSquare(int x, int y) {
-	BoxCoord b(x, y);
-	if (!Utility::contains(squareCoordList, b)) {
-		squareCoordList.push_back(b);
-		TerrainGenerator gen(x, y, squaresToBuffer, generatorMutex);
-		return gen.start();
-	}
-	return NULL;
-}
-
-//==============================================================================
-// Deletes Square and Allows Other Squares to be Drawn
-//==============================================================================
-void Terrain::deleteSquare(TerrainSquare square) {
-		for (int i = 0; i < 9; i++) {
-			if (memory[i] != NULL && memory[i]->x == square.x && memory[i]->y == square.y) {
-				delete memory[i];
-				memory[i] = NULL;
-			}
-		}
-		Utility::remove(squareCoordList, BoxCoord(square.x, square.y));
-		Utility::remove(squares, square);
-}
-
-//==============================================================================
-// Gets the Terrain Square with BoxCoord (x, y)
-//==============================================================================
-TerrainSquare* Terrain::getSquare(int x, int y) {
-	for (TerrainSquare& square : squares) {
-		if (square.x == x && square.y == y) {
-			return &square;
+void Terrain::deleteSquare(Vector2i coord) {
+	for(int i = 0; i < 9; i++) {
+		if(memory[i] == coord) {
+			memory[i] = Vector2i(INT_MAX, INT_MAX);
+			Utility::printToOutput(coord.toString() + " deleted\n");
+			return;
 		}
 	}
-	throw std::invalid_argument(std::string("Square [") + std::to_string(x) + ", " + std::to_string(y) + "] is not loaded");
+	if(futureSquares.erase(coord))
+		Utility::printToOutput(coord.toString() + " deletedn\n");
 }
 
-//==============================================================================
-// Gets Index in Memory of First Available Square
-//==============================================================================
 int Terrain::getAvailableSquare() {
-	for (int i = 0; i < 9; i++) {
-		if (memory[i] == NULL)
+	for(int i = 0; i < 9; i++) {
+		if(memory[i] == Vector2i(INT_MAX, INT_MAX))
 			return i;
 	}
 	return -1;
 }
 
-//==============================================================================
-// Gets the Height At (x, y)
-//==============================================================================
-float Terrain::getHeightAt(float x, float y) {
-	if (fountainRadius != -1 &&
-		Utility::distThreshold(fountainLocation.x, fountainLocation.y, x, y, fountainRadius))
-		return fountainHeight;
-	return TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, x, y) * (float) TERRAIN_HEIGHT;
+Vector2i Terrain::getSquareCoord(Vector3f pos) {
+	int sx, sz;
+	if(pos.x >= 0)
+		sx = (int) pos.x / TERRAIN_SQUARE_SIZE;
+	else
+		sx = ((int) pos.x / TERRAIN_SQUARE_SIZE) - 1;
+	if(pos.z >= 0)
+		sz = (int) pos.z / TERRAIN_SQUARE_SIZE;
+	else
+		sz = ((int) pos.z / TERRAIN_SQUARE_SIZE) - 1;
+
+	return Vector2i(sx, sz);
 }
 
-//==============================================================================
-// Returns the Center of Influence
-//==============================================================================
-Vector2f Terrain::getCenterOfInfluence() {
-	return fountainLocation;
-}
+TerrainSquare Terrain::generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOISE_SIZE]) {
+	float yVals[TERRAIN_SQUARE_SIZE + 1][TERRAIN_SQUARE_SIZE + 1];
 
-//==============================================================================
-// Returns Whether Player has Placed Fountain
-//==============================================================================
-bool Terrain::isFountainPlaced() {
-	return fountainRadius != -1;
-}
+	Vector2f topLeftCorner(coord.x * TERRAIN_SQUARE_SIZE, coord.y * TERRAIN_SQUARE_SIZE);
 
-//==============================================================================
-// Returns the Size of Influence as Radius
-//==============================================================================
-int Terrain::getInfluenceRadius() {
-	return fountainRadius;
-}
+	float nx, ny;
+	for(int i = 0; i <= TERRAIN_SQUARE_SIZE; i++) {
+		for(int j = 0; j <= TERRAIN_SQUARE_SIZE; j++) {
 
-//==============================================================================
-// Places Fountain and Reconstructs Terrain
-//==============================================================================
-void Terrain::placeFountain(int x, int z, int r) {
+			nx = topLeftCorner.x + i;
+			ny = topLeftCorner.y + j;
 
-}
-
-//==============================================================================
-// Updates VBO
-//==============================================================================
-void Terrain::updateVBO() {
-	generatorMutex.lock();
-		while (squaresToBuffer.size() > 0) {
-			int n = getAvailableSquare();
-			if (n != -1) {
-				TerrainSquare square = squaresToBuffer[0];
-				glBindBuffer(GL_ARRAY_BUFFER, vboTerrainVertexHandle);
-				glBufferSubData(GL_ARRAY_BUFFER,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat),
-								&square.vertices[0]);
-				glBindBuffer(GL_ARRAY_BUFFER, vboTerrainNormalHandle);
-				glBufferSubData(GL_ARRAY_BUFFER,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat) * n,
-								SQUARE_FLOAT_COUNT * sizeof(GLfloat),
-								&square.normals[0]);
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-				delete square.normals;
-				delete square.vertices;
-
-				memory[n] = new BoxCoord(square.x, square.y);
-				squares.push_back(square);
-				squaresToBuffer.erase(squaresToBuffer.begin());
-			}
+			yVals[i][j] = TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, nx, ny, NOISE) * (float) TERRAIN_HEIGHT;
 		}
-		generatorMutex.unlock();
+	}
+
+	Vector3f p1, p2, p3, p4, n1, n2;
+
+	std::vector<GLfloat>* vertices = new std::vector<GLfloat>();
+	std::vector<GLfloat>* normals = new std::vector<GLfloat>();
+	for(int i = 0; i < TERRAIN_SQUARE_SIZE; i++) {
+		for(int j = 0; j < TERRAIN_SQUARE_SIZE; j++) {
+
+			p1 = Vector3f(topLeftCorner.x + i, yVals[i][j], topLeftCorner.y + j);
+			p2 = Vector3f(topLeftCorner.x + i, yVals[i][j + 1], topLeftCorner.y + j + 1);
+			p3 = Vector3f(topLeftCorner.x + i + 1, yVals[i + 1][j + 1], topLeftCorner.y + j + 1);
+			p4 = Vector3f(topLeftCorner.x + i + 1, yVals[i + 1][j], topLeftCorner.y + j);
+
+			n1 = Vector3f::norm(Vector3f::cross(p2 - p1, p3 - p1));
+			n2 = Vector3f::norm(Vector3f::cross(p3 - p1, p4 - p1));
+
+			p1.pushOn(vertices);
+			n1.pushOn(normals);
+
+			p2.pushOn(vertices);
+			n1.pushOn(normals);
+
+			p3.pushOn(vertices);
+			n1.pushOn(normals);
+
+
+			p1.pushOn(vertices);
+			n2.pushOn(normals);
+
+			p3.pushOn(vertices);
+			n2.pushOn(normals);
+
+			p4.pushOn(vertices);
+			n2.pushOn(normals);
+		}
+	}
+
+	return TerrainSquare(coord, vertices, normals);
 }

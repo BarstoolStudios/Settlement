@@ -13,32 +13,33 @@
 #include <climits>
 #include <string>
 #include "Terrain/TerrainSquare.h"
+#include "Util/GLMath.h"
 
 //==============================================================================
 // Stores Data For Squares
 //==============================================================================
 
-TerrainSquare::TerrainSquare() {
-	x = INT_MAX;
-	y = INT_MAX;
-}
+TerrainSquare::TerrainSquare() 
+:
+coord(INT_MAX, INT_MAX)
+{}
 
-TerrainSquare::TerrainSquare(int x, int y, std::vector<GLfloat>* vertices, std::vector<GLfloat>* normals) {
-	this->x = x;
-	this->y = y;
-	this->vertices = vertices;
-	this->normals = normals;
-}
+TerrainSquare::TerrainSquare(Vector2i coord, std::vector<GLfloat>* vertices, std::vector<GLfloat>* normals) 
+:
+	coord(coord),
+	vertices(vertices),
+	normals(normals)
+{}
 
 bool TerrainSquare::operator == (const TerrainSquare& other) {
-	return x == other.x && y == other.y;
+	return coord == other.coord;
 }
 bool TerrainSquare::operator != (const TerrainSquare& other) {
-	return x != other.x || y != other.y;
+	return coord != other.coord;
 }
 
 std::string TerrainSquare::toString() {
-	return std::string("[") + std::to_string(x) + ", " + std::to_string(y) + "]";
+	return std::string("[") + std::to_string(coord.x) + ", " + std::to_string(coord.y) + "]";
 }
 
 std::ostream& operator << (std::ostream &strm, TerrainSquare& sqr) {

@@ -1,6 +1,8 @@
 #ifndef GAMETIMER_H
 #define GAMETIMER_H
 
+class GameTimer;
+
 class GameTimer {
 	double lastFrame;
 	double delta;

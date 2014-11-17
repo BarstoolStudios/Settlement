@@ -1,20 +1,22 @@
 #ifndef TERRAINSQUARE_H
 #define TERRAINSQUARE_H
 
+class TerrainSquare;
+
 #include <GL/glew.h>
 #include <ostream>
 #include <vector>
 #include <string>
-
+#include "Util/GLMath.h"
 
 class TerrainSquare {
 public:
-	int x, y;
+	Vector2i coord;
 	std::vector<GLfloat>* vertices;
 	std::vector<GLfloat>* normals;
 
 	TerrainSquare();
-	TerrainSquare(int x, int y, std::vector<GLfloat>* vertices, std::vector<GLfloat>* normals);
+	TerrainSquare(Vector2i coord, std::vector<GLfloat>* vertices, std::vector<GLfloat>* normals);
 
 	std::string toString();
 
