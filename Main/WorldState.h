@@ -16,14 +16,19 @@ class WorldState {
 
 public:
 	Player* player;
-
-	std::list<Settlement>* settlements;
-
-	std::list<Tree>* trees;
+	
+	Terrain* terrain;
 	
 	WorldState();
+	~WorldState();
 
 	void draw(Camera& camera, Sun& sun);
+
+	void update(GameTimer& timer);
+
+	void addPlayerSettlement(float radius);
+
+	void addTree(Vector2f pos);
 };
 
-#endif
+#endif // WORLDSTATE_H

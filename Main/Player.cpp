@@ -34,6 +34,14 @@ void Player::updatePrevious() {
 	previous = position;
 }
 
+void Player::setSettlement(Settlement* s) {
+	settlement = s;
+}
+
+Settlement* Player::getSettlement() {
+	return settlement;
+}
+
 void Player::applyPhysics(Terrain& terrain, GameTimer& timer) {
 	float dt = timer.getDelta();
 

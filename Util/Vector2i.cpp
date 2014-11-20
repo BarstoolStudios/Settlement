@@ -143,6 +143,10 @@ bool Vector2i::operator != (const Vector2i& vec) {
 	return x != vec.x || y != vec.y;
 }
 
+bool operator == (const Vector2i& v1, const Vector2i& v2) {
+	return v1.x == v2.x && v1.y == v2.y;
+}
+
 //==============================================================================
 // Returns string Representation of Vector
 //==============================================================================

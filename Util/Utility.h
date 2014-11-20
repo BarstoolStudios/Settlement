@@ -28,4 +28,4 @@ namespace Utility {
 	}
 }
 
-#endif
+#endif // UTILITY_H

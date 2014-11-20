@@ -27,4 +27,4 @@ public:
 
 };
 
-#endif
+#endif // AITHREAD_H

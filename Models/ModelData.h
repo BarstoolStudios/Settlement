@@ -33,4 +33,4 @@ public:
 	Skeleton* getSkeleton();
 };
 
-#endif
+#endif // MODELDATA_H

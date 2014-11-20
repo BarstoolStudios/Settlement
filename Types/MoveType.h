@@ -17,4 +17,4 @@ enum MoveType {
 	SOUTHWEST, SPRINT, WALK, RUN, JUMP, NO_MOVE
 };
 
-#endif
+#endif // MOVETYPE_H

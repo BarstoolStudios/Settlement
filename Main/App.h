@@ -21,7 +21,6 @@ class App {
 	Mouse* mouse;
 	GameTimer* timer;
 	Camera* camera;
-	Terrain* terrain;
 	Sun* sun;
 	WorldState* worldState;
 
@@ -42,4 +41,4 @@ public:
 	void gameLoop();
 };
 
-#endif
+#endif APP_H

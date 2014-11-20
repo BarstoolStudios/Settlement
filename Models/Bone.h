@@ -61,4 +61,4 @@ public:
 
 };
 
-#endif
+#endif // BONE_H

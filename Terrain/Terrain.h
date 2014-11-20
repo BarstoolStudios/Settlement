@@ -6,11 +6,15 @@ class Terrain;
 #include <map>
 #include <functional>
 #include <future>
+#include <list>
 #include "Main/Player.h"
+#include "Models/Tree.h"
 #include "Main/Camera.h"
 #include "Terrain/Sun.h"
 #include "Util/GLMath.h"
 #include "Main/Settings.h"
+#include "Main/WorldState.h"
+#include "Settlements/Settlement.h"
 #include "Terrain/TerrainSquare.h"
 
 class Terrain {
@@ -38,6 +42,10 @@ class Terrain {
 
 	std::map<Vector2i, std::future<TerrainSquare>*, vecComp> futureSquares;
 
+	std::vector<Settlement>* settlements;
+
+	std::list<Tree>* trees;
+
 public:
 
 	const static int NOISE_SIZE = 256;
@@ -48,7 +56,12 @@ public:
 
 	void draw(Camera& camera, Sun& sun);
 
+	void addPlayerSettlement(Player& player, float radius);
+
+	void addTree(Vector2f pos);
+
 	float getHeightAt(float x, float y);
+	float getHeightAt(Vector2f v);
 
 	void addSquare(Vector2i coord);
 
@@ -58,7 +71,7 @@ public:
 
 	Vector2i getSquareCoord(Vector3f pos);
 
-	static TerrainSquare generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOISE_SIZE]);
+	static TerrainSquare generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOISE_SIZE], std::vector<Settlement>& settlements);
 
 private:
 	int NOISE[NOISE_SIZE][NOISE_SIZE];

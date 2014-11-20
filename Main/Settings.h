@@ -60,4 +60,4 @@
 //============================================
 #define SUN_DAY_TIME				360000	// In ms
 
-#endif
+#endif // SETTINGS_H

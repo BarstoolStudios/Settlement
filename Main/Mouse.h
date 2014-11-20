@@ -28,4 +28,4 @@ public:
 	bool isGrabbed();
 };
 
-#endif
+#endif // MOUSE_H

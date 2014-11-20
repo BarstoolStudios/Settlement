@@ -18,6 +18,13 @@ Vector4f::Vector4f(const Vector4f& vec) {
 	w = vec.w;
 }
 
+Vector4f::Vector4f(const Vector4i& vec) {
+	x = vec.x;
+	y = vec.y;
+	z = vec.z;
+	w = vec.w;
+}
+
 Vector4f::Vector4f(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
 	x = a;
 	y = b;

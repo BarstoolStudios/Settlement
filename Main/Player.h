@@ -9,6 +9,7 @@ class Player;
 #include "Main/Mouse.h"
 #include "Terrain/Terrain.h"
 #include "Util/GameTimer.h"
+#include "Settlements/Settlement.h"
 
 class Player {
 
@@ -19,6 +20,8 @@ class Player {
 	Vector3f previous;
 
 	float yVelocity;
+
+	Settlement* settlement;
 
 public:
 
@@ -52,6 +55,10 @@ public:
 	void resetPosition();
 
 	void updatePrevious();
+
+	void setSettlement(Settlement* s);
+
+	Settlement* getSettlement();
 
 	void applyPhysics(Terrain& terrain, GameTimer& timer);
 

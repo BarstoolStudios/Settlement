@@ -24,6 +24,7 @@ public:
 
 	Vector4f();
 	Vector4f(const Vector4f& vec);
+	Vector4f(const Vector4i& vec);
 	Vector4f(GLfloat, GLfloat, GLfloat, GLfloat);
 
 	void pushOn(std::vector<GLfloat>* floats);
@@ -103,6 +104,7 @@ class Vector3f {
 
 		Vector3f();
 		Vector3f(const Vector3f& vec);
+		Vector3f(const Vector3i& vec);
 		Vector3f(GLfloat, GLfloat, GLfloat);
 
 		void pushOn(std::vector<GLfloat>* floats);
@@ -186,6 +188,7 @@ class Vector2f {
 
 		Vector2f();
 		Vector2f(const Vector2f& vec);
+		Vector2f(const Vector2i& vec);
 		Vector2f(GLfloat, GLfloat);
 
 		void pushOn(std::vector<GLfloat>* floats);
@@ -254,6 +257,8 @@ public:
 
 	static GLint dot(const Vector2i&, const Vector2i&);
 };
+
+bool operator == (const Vector2i&, const Vector2i&);
 
 std::ostream& operator<<(std::ostream &strm, const Vector2i& vec);
 
@@ -342,6 +347,55 @@ public:
 
 std::ostream& operator<<(std::ostream &strm, const Matrix2f& vec);
 
+class Circle {
+public:
+	Vector2f center;
+	GLfloat radius;
+
+	Circle() : Circle(Vector2f(), 0){}
+	Circle(Vector2f center, GLfloat radius) : center(center), radius(radius){}
+};
+
+class Rect {
+public:
+	Vector2f p1, p2;
+
+	Rect() : Rect(p1, p2) {}
+	Rect(Vector2f p1, Vector2f p2) : p1(p1), p2(p2) {}
+};
+
+class Line2f {
+public:
+	Vector2f p1, p2;
+
+	Line2f() : Line2f(Vector2f(), Vector2f()) {}
+	Line2f(Vector2f p1, Vector2f p2) : p1(p1), p2(p2){}
+};
+
+class Line3f {
+public:
+	Vector3f p1, p2;
+
+	Line3f() : Line3f(Vector3f(), Vector3f()) {}
+	Line3f(Vector3f p1, Vector3f p2) : p1(p1), p2(p2) {}
+};
+
+class LineSeg2f {
+public:
+	Vector2f p1, p2;
+
+	LineSeg2f() : LineSeg2f(Vector2f(), Vector2f()) {}
+	LineSeg2f(Vector2f p1, Vector2f p2) : p1(p1), p2(p2) {}
+};
+
+class LineSeg3f {
+public:
+	Vector3f p1, p2;
+
+	LineSeg3f() : LineSeg3f(Vector3f(), Vector3f()) {}
+	LineSeg3f(Vector3f p1, Vector3f p2) : p1(p1), p2(p2) {}
+};
+
 namespace GLMath {
 	Matrix4f getPerspective(float fov, float height, float width, float zNear, float zFar);
 
@@ -362,5 +416,34 @@ namespace GLMath {
 	Matrix4f getRotation(Vector3f vec);
 
 	Matrix3f fourToThree(const Matrix4f& m4);
+
+
+	//==============================================================================
+	// Point to Point formulas
+	//==============================================================================
+	bool distThreshold2f(Vector2f p1, Vector2f p2, float threshold);
+
+	float distSquared2f(Vector2f p1, Vector2f p2);
+
+	float dist2f(Vector2f p1, Vector2f p2);
+
+	//==============================================================================
+	// Point to Line Segment formulas
+	//==============================================================================
+	bool distThreshold2f(Vector2f p, LineSeg2f l, float threshold);
+
+	float distSquared2f(Vector2f p, LineSeg2f l);
+
+	float dist2f(Vector2f p, LineSeg2f l);
+
+	bool intersect(Vector2f p, Rect r);
+
+	bool intersect(Rect r1, Rect r2);
+
+	bool intersect(Vector2f p, Circle c);
+
+	bool intersect(Circle c, Rect r);
+
+	bool intersect(Circle c1, Circle c2);
 }
-#endif
+#endif // GLMATH_H

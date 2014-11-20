@@ -26,4 +26,4 @@ public:
 
 std::ostream& operator << (std::ostream &strm, const TerrainSquare& sqr);
 
-#endif
+#endif // TERRAINSQUARE_H

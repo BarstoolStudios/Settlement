@@ -12,6 +12,10 @@
 #include "Util/GLMath.h"
 
 //==============================================================================
+// Matrix types
+//==============================================================================
+
+//==============================================================================
 // Constructs Perspective Matrix
 //==============================================================================
 Matrix4f GLMath::getPerspective(float fov, float height, float width, float zNear, float zFar) {
@@ -146,4 +150,90 @@ Matrix4f GLMath::getRotation(float x, float y, float z) {
 
 Matrix4f GLMath::getRotation(Vector3f vec) {
 	return getRotation(vec.x, vec.y, vec.z);
+}
+
+//==============================================================================
+// Useful Math Equations
+//==============================================================================
+
+//==============================================================================
+// Point to Point formulas
+//==============================================================================
+bool GLMath::distThreshold2f(Vector2f p1, Vector2f p2, float threshold) {
+	return distSquared2f(p1, p2) < (threshold * threshold);
+}
+
+float GLMath::distSquared2f(Vector2f p1, Vector2f p2) {
+	return Vector2f::dot(p2 - p1, p2 - p1);
+}
+
+float GLMath::dist2f(Vector2f p1, Vector2f p2) {
+	return sqrtf(distSquared2f(p1, p2));
+}
+
+//==============================================================================
+// Point to Line Segment formulas
+//==============================================================================
+bool GLMath::distThreshold2f(Vector2f p, LineSeg2f l, float threshold) {
+	return distSquared2f(p, l) <= (threshold * threshold);
+}
+
+float GLMath::distSquared2f(Vector2f p, LineSeg2f l) {
+	float l2 = distSquared2f(l.p1, l.p2);
+
+	if(l2 == 0) return distSquared2f(p, l.p1);
+
+	float t = Vector2f::dot(p - l.p1, l.p2 - l.p1) / l2;
+
+	if(t < 0) return distSquared2f(p, l.p1);
+
+	if(t > 1) return distSquared2f(p, l.p2);
+
+	return distSquared2f(p, l.p1 + ((l.p2 - l.p1) * t));
+}
+
+float GLMath::dist2f(Vector2f p, LineSeg2f l) {
+	return sqrtf(distSquared2f(p, l));
+}
+
+//==============================================================================
+// Point Rect intersection
+//==============================================================================
+bool GLMath::intersect(Vector2f p, Rect r) {
+	return p.x >= r.p1.x && p.x <= r.p2.x && p.y >= r.p1.y && p.y <= r.p2.y;
+}
+
+//==============================================================================
+// Rect Rect intersection
+//==============================================================================
+bool GLMath::intersect(Rect r1, Rect r2) {
+	return	intersect(r1.p1, r2) &&
+			intersect(Vector2f(r1.p1.x, r1.p2.y), r2) &&
+			intersect(Vector2f(r1.p2.x, r1.p1.y), r2) &&
+			intersect(r1.p2, r2);
+}
+
+//==============================================================================
+// Point Circle intersection
+//==============================================================================
+bool GLMath::intersect(Vector2f p, Circle c) {
+	return distThreshold2f(p, c.center, c.radius);
+}
+
+//==============================================================================
+// Circle Rect intersection
+//==============================================================================
+bool GLMath::intersect(Circle c, Rect r) {
+	return	intersect(c.center, r) ||
+			distThreshold2f(c.center, LineSeg2f(r.p1, Vector2f(r.p2.x, r.p1.y)), c.radius) ||
+			distThreshold2f(c.center, LineSeg2f(r.p1, Vector2f(r.p1.x, r.p2.y)), c.radius) ||
+			distThreshold2f(c.center, LineSeg2f(Vector2f(r.p1.x, r.p2.y), r.p2), c.radius) ||
+			distThreshold2f(c.center, LineSeg2f(Vector2f(r.p2.x, r.p1.y), r.p2), c.radius);
+}
+
+//==============================================================================
+// Circle Circle intersection
+//==============================================================================
+bool GLMath::intersect(Circle c1, Circle c2) {
+	return distThreshold2f(c1.center, c2.center, c1.radius + c2.radius);
 }

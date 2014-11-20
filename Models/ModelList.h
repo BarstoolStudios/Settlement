@@ -5,4 +5,4 @@ class ModelList {
 
 };
 
-#endif
+#endif // MODELLIST_H

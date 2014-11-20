@@ -18,4 +18,4 @@ public:
 	bool hasTexCoords();
 };
 
-#endif
+#endif // FACE_H

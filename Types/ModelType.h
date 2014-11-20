@@ -16,4 +16,4 @@ enum ModelType {
 	TREE, VILLAGER
 };
 
-#endif
+#endif // MODELTYPE_H

@@ -20,4 +20,4 @@ public:
 	void update();
 };
 
-#endif
+#endif // GAMETIMER_H

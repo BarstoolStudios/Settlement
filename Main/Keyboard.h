@@ -141,4 +141,4 @@ private:
 	Uint8 prev[KEY_MAX];
 };
 
-#endif
+#endif // KEYBOARD_H

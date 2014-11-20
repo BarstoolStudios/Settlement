@@ -14,12 +14,8 @@
 #include <list>
 #include "Main/App.h"
 #include "Main/Settings.h"
-#include "Util/ShaderUtil.h"
 #include "Util/Utility.h"
-#include "Models/Tree.h"
 #include "Util/Text.h"
-#include "Models/Villager.h"
-#include "Models/Pole.h"
 
 //==============================================================================
 // Constructor
@@ -38,8 +34,6 @@ App::App() {
 
 	worldState = new WorldState();
 
-	terrain = new Terrain(*(worldState->player));
-
 	//------------------------------------------------------------------------------
 	// Load Static Resources
 	//------------------------------------------------------------------------------
@@ -50,7 +44,7 @@ App::App() {
 	//------------------------------------------------------------------------------
 	mouse->setGrabbed(true);
 
-	worldState->trees->push_back(Tree(Vector3f(0, terrain->getHeightAt(0, -10), -10)));
+	worldState->addTree(Vector2f(0, -10));
 
 }
 
@@ -63,7 +57,7 @@ App::~App() {
 	delete mouse;
 	delete timer;
 	delete camera;
-	delete terrain;
+	delete sun;
 	delete worldState;
 }
 //==============================================================================
@@ -99,6 +93,9 @@ void App::loadResources() {
 void App::input() {
 
 	worldState->player->input(*keyboard, *mouse, *timer);
+
+	if(keyboard->wasKeyPressed(Keyboard::KEY_H))
+		worldState->addPlayerSettlement(32);
 
 	//------------------------------------------------------------------------------
 	// Debugging Code
@@ -142,19 +139,14 @@ void App::update() {
 	camera->update(*(worldState->player));
 
 	//------------------------------------------------------------------------------
-	// Update Terrain
-	//------------------------------------------------------------------------------
-	terrain->update(*(worldState->player));
-
-	//------------------------------------------------------------------------------
-	// Update Player
-	//------------------------------------------------------------------------------
-	worldState->player->update(*terrain, *timer);
-
-	//------------------------------------------------------------------------------
-	// Update Player
+	// Update Sun
 	//------------------------------------------------------------------------------
 	sun->update(*timer);
+
+	//------------------------------------------------------------------------------
+	// Update World State
+	//------------------------------------------------------------------------------
+	worldState->update(*timer);
 
 }
 
@@ -164,8 +156,6 @@ void App::update() {
 void App::render() {
 
 	worldState->draw(*camera, *sun);
-
-	terrain->draw(*camera, *sun);
 
 	//------------------------------------------------------------------------------
 	// Display Debugging Info

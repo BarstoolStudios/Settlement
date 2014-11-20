@@ -20,4 +20,4 @@ public:
 	bool isQuitRequested();
 };
 
-#endif
+#endif // DISPLAY_H

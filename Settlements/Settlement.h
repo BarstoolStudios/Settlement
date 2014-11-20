@@ -7,27 +7,29 @@ class Settlement;
 #include <cstdlib>
 #include "Models/Villager.h"
 #include "Util/GLMath.h"
-#include "Models/Pole.h"
 #include "Main/Camera.h"
 #include "Terrain/Sun.h"
+#include "Util/GLMath.h"
+#include "Models/Pole.h"
 
 class Settlement {
 
-	Vector3f location;
+	Circle area;
+	float height;
 
 	std::list<Villager> villagers;
 
 	Pole pole;
 
-	float influenceRadius;
-
 public:
 
 	Settlement();
-	Settlement(Vector3f location, float influenceRadius);
+	Settlement(Circle area, float height);
 
 	void draw(Camera& camera, Sun& sun);
 
+	Circle getArea();
+	float getHeight();
 };
 
 #endif // SETTLEMENT_H

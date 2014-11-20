@@ -3,12 +3,17 @@
 #include "Util/Utility.h"
 #include "Util/TerrainUtil.h"
 #include "Terrain/TerrainSquare.h"
+#include "Main/WorldState.h"
 #include <climits>
 #include <future>
 
 
 Terrain::Terrain(Player& player) {
 	
+	trees = new std::list<Tree>();
+
+	settlements = new std::vector<Settlement>();
+
 	//------------------------------------------------------------------------------
 	// Generate Noise
 	//------------------------------------------------------------------------------
@@ -128,17 +133,17 @@ void Terrain::update(Player& player) {
 			deleteSquare(Vector2i(prevSquare.x - 1, prevSquare.y - 1));
 			deleteSquare(Vector2i(prevSquare.x - 1, prevSquare.y + 1));
 
-			addSquare(Vector2i(currSquare.x + 1, currSquare.y));
-			addSquare(Vector2i(currSquare.x + 1, currSquare.y - 1));
-			addSquare(Vector2i(currSquare.x + 1, currSquare.y + 1));
+			addSquare(Vector2i(currSquare.x + 1,	currSquare.y));
+			addSquare(Vector2i(currSquare.x + 1,	currSquare.y - 1));
+			addSquare(Vector2i(currSquare.x + 1,	currSquare.y + 1));
 		} else if(currSquare.x < prevSquare.x) {
 			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y));
 			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y - 1));
 			deleteSquare(Vector2i(prevSquare.x + 1, prevSquare.y + 1));
 
-			addSquare(Vector2i(currSquare.x - 1, currSquare.y));
-			addSquare(Vector2i(currSquare.x - 1, currSquare.y - 1));
-			addSquare(Vector2i(currSquare.x - 1, currSquare.y + 1));
+			addSquare(Vector2i(currSquare.x - 1,	currSquare.y));
+			addSquare(Vector2i(currSquare.x - 1,	currSquare.y - 1));
+			addSquare(Vector2i(currSquare.x - 1,	currSquare.y + 1));
 		}
 
 		if(currSquare.y > prevSquare.y) {
@@ -235,10 +240,26 @@ void Terrain::draw(Camera& camera, Sun& sun) {
 	glUseProgram(0);
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	for(auto& s : *settlements) {
+		s.draw(camera, sun);
+	}
+
+	for(auto& t : *trees) {
+		t.draw(camera, sun);
+	}
 }
 
 float Terrain::getHeightAt(float x, float y) {
+	for(auto& s : *settlements) {
+		if(GLMath::intersect(Vector2f(x, y), s.getArea()))
+			return s.getHeight();
+	}
 	return TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, x, y, NOISE) * (float) TERRAIN_HEIGHT;
+}
+
+float Terrain::getHeightAt(Vector2f v) {
+	return getHeightAt(v.x, v.y);
 }
 
 void Terrain::addSquare(Vector2i coord) {
@@ -256,8 +277,34 @@ void Terrain::addSquare(Vector2i coord) {
 	Utility::printToOutput(coord.toString() + " added\n");
 
 	// Add Square
-	futureSquares[coord] = new std::future<TerrainSquare>(std::async(std::launch::async, Terrain::generateTerrain, coord, NOISE));
+	futureSquares[coord] = new std::future<TerrainSquare>(std::async(std::launch::async, Terrain::generateTerrain, coord, NOISE, *settlements));
 	
+}
+
+void Terrain::addPlayerSettlement(Player& player, float radius) {
+	Circle c(Vector2f(player.getPosition().x, player.getPosition().z), radius);
+	settlements->push_back(Settlement(c, getHeightAt(c.center)));
+	Settlement* s = &(*settlements)[settlements->size() - 1];
+	std::vector<Vector2i> affectedSquares;
+	for(int i = -1; i <= 1; i++) {
+		for(int j = -1; j <= 1; j++) {
+			Vector2i square = prevSquare + Vector2i(i, j);
+			Vector2i p = square * TERRAIN_SQUARE_SIZE;
+			Rect r(p, p + Vector2i(TERRAIN_SQUARE_SIZE, TERRAIN_SQUARE_SIZE));
+
+			if(GLMath::intersect(s->getArea(), r) && !Utility::contains(affectedSquares, square)) {
+				deleteSquare(square);
+				addSquare(square);
+				affectedSquares.push_back(square);
+			}
+		}
+	}
+	
+	//player.setSettlement(s);
+}
+
+void Terrain::addTree(Vector2f pos) {
+	trees->push_back(Tree(Vector3f(pos.x, getHeightAt(pos), pos.y)));
 }
 
 void Terrain::deleteSquare(Vector2i coord) {
@@ -294,10 +341,19 @@ Vector2i Terrain::getSquareCoord(Vector3f pos) {
 	return Vector2i(sx, sz);
 }
 
-TerrainSquare Terrain::generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOISE_SIZE]) {
-	float yVals[TERRAIN_SQUARE_SIZE + 1][TERRAIN_SQUARE_SIZE + 1];
+TerrainSquare Terrain::generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOISE_SIZE], std::vector<Settlement>& settlements) {
+	Vector2f topLeftCorner = coord * TERRAIN_SQUARE_SIZE;
+	
+	Rect r(topLeftCorner, topLeftCorner + Vector2f(TERRAIN_SQUARE_SIZE, TERRAIN_SQUARE_SIZE));
+	bool containsSettlement = false;
+	for(auto& s : settlements) {
+		if(GLMath::intersect(s.getArea(), r)) {
+			containsSettlement = true;
+			break;
+		}
+	}
 
-	Vector2f topLeftCorner(coord.x * TERRAIN_SQUARE_SIZE, coord.y * TERRAIN_SQUARE_SIZE);
+	float yVals[TERRAIN_SQUARE_SIZE + 1][TERRAIN_SQUARE_SIZE + 1];
 
 	float nx, ny;
 	for(int i = 0; i <= TERRAIN_SQUARE_SIZE; i++) {
@@ -305,8 +361,18 @@ TerrainSquare Terrain::generateTerrain(Vector2i coord, int NOISE[NOISE_SIZE][NOI
 
 			nx = topLeftCorner.x + i;
 			ny = topLeftCorner.y + j;
-
-			yVals[i][j] = TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, nx, ny, NOISE) * (float) TERRAIN_HEIGHT;
+			if(containsSettlement) {
+				for(auto& s : settlements) {
+					if(GLMath::intersect(Vector2f(nx, ny), s.getArea())) {
+						yVals[i][j] = s.getHeight();
+						break;
+					} else {
+						yVals[i][j] = TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, nx, ny, NOISE) * (float) TERRAIN_HEIGHT;
+					}
+				}
+			} else {
+				yVals[i][j] = TerrainUtil::octivate(TERRAIN_NUM_OCTIVES, TERRAIN_INITIAL_FREQUENCY, nx, ny, NOISE) * (float) TERRAIN_HEIGHT;
+			}
 		}
 	}
 

@@ -30,4 +30,4 @@ public:
 	void draw(Camera& camera, Sun& sun);
 };
 
-#endif
+#endif // TREE_H

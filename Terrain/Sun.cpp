@@ -32,5 +32,9 @@ std::string Sun::toString() {
 
 	int minutes = (int)(((theta / PI_F) - (hours / 12.0f)) * 720);
 
-	return std::to_string(hours) + ":" + std::to_string(minutes) + " " + std::to_string(theta) + " " + position.toString();
+	char sMinutes[3] = {0, 0, 0};
+
+	sprintf_s(sMinutes, sizeof(sMinutes), "%02d", minutes);
+
+	return std::to_string(hours) + ":" + sMinutes;
 }

@@ -43,4 +43,4 @@ public:
 	void rotateDown(std::string name, Vector3f rotation);
 };
 
-#endif
+#endif // SKELETON_H

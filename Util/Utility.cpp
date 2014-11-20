@@ -15,13 +15,6 @@
 #include "Util/Utility.h"
 
 //==============================================================================
-// Returns True When Distance from (x1, y1) to (x2, y2) is < threshold
-//==============================================================================
-bool Utility::distThreshold(float x1, float y1, float x2, float y2, float threshold) {
-	return ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (threshold * threshold);
-}
-
-//==============================================================================
 // Returns True if str Begins With beg
 //==============================================================================
 bool Utility::stringStartsWith(std::string& str, std::string beg) {

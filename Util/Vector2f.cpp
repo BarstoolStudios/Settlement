@@ -15,6 +15,11 @@ Vector2f::Vector2f(const Vector2f& vec) {
 	y = vec.y;
 }
 
+Vector2f::Vector2f(const Vector2i& vec) {
+	x = vec.x;
+	y = vec.y;
+}
+
 Vector2f::Vector2f(GLfloat a, GLfloat b) {
 	x = a;
 	y = b;

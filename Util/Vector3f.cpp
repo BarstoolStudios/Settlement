@@ -15,6 +15,12 @@ Vector3f::Vector3f(const Vector3f& vec) {
 	z = vec.z;
 }
 
+Vector3f::Vector3f(const Vector3i& vec) {
+	x = vec.x;
+	y = vec.y;
+	z = vec.z;
+}
+
 Vector3f::Vector3f(GLfloat a, GLfloat b, GLfloat c) {
 	x = a;
 	y = b;
