@@ -300,7 +300,7 @@ void Terrain::addPlayerSettlement(Player& player, float radius) {
 		}
 	}
 	
-	//player.setSettlement(s);
+	player.setSettlement(s);
 }
 
 void Terrain::addTree(Vector2f pos) {
